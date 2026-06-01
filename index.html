@@ -487,6 +487,62 @@ header {
 .v-scripture p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(240,228,194,0.8);line-height:1.6;}
 .v-restart{margin-top:0.8rem;padding:0.65rem 1.6rem;border-radius:30px;background:var(--gold);color:var(--blue);border:none;font-family:'Cinzel',serif;font-size:0.76rem;font-weight:700;letter-spacing:0.12em;cursor:pointer;transition:opacity 0.15s,transform 0.15s;text-transform:uppercase;}
 .v-restart:hover{opacity:0.88;transform:scale(1.04);}
+
+/* ── LEVEL PILL (header) ── */
+.level-pill{font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold2);background:rgba(200,151,30,0.14);border:1px solid rgba(200,151,30,0.4);border-radius:20px;padding:0.12rem 0.7rem;white-space:nowrap;}
+
+/* ── LEVEL 2/3 RECORDS PAGE (scrolls / crowns) ── */
+.record-list{display:flex;flex-direction:column;gap:0.85rem;}
+.record{display:flex;align-items:center;gap:0.9rem;cursor:pointer;
+  background:linear-gradient(150deg,rgba(255,248,220,0.7),rgba(220,200,150,0.35));
+  border:2px solid rgba(120,90,30,0.4);border-radius:12px;padding:0.85rem 1rem;
+  transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;}
+.record:hover{transform:translateX(4px);border-color:var(--gold);box-shadow:0 4px 18px rgba(120,90,30,0.25);}
+.record.done{opacity:0.7;border-color:rgba(200,151,30,0.6);background:linear-gradient(150deg,rgba(200,151,30,0.14),rgba(200,151,30,0.05));}
+.record-art{font-size:2rem;flex-shrink:0;width:2.6rem;text-align:center;filter:grayscale(0.15);}
+.record.done .record-art{filter:none;}
+.record-body{flex:1;min-width:0;}
+.record-name{font-family:'Cinzel',serif;font-weight:700;font-size:0.96rem;color:var(--blue);margin-bottom:0.15rem;}
+.record-quote{font-family:'Lora',serif;font-style:italic;font-size:0.82rem;color:var(--ink2);line-height:1.4;}
+.record-ref{font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.06em;color:var(--red);margin-top:0.22rem;}
+.record-go{font-size:0.62rem;font-weight:800;letter-spacing:0.05em;color:var(--gold);text-transform:uppercase;flex-shrink:0;}
+.record.done .record-go::before{content:'✓ ';}
+
+/* ── SOURCE SCROLL in card (the actual words) ── */
+.p-scroll{background:linear-gradient(160deg,#f3e6c8,#e3d2a8);border:1px solid rgba(120,90,30,0.45);border-radius:9px;padding:0.7rem 0.9rem;margin-bottom:0.85rem;box-shadow:inset 0 0 24px rgba(150,110,50,0.12);}
+.p-scroll-head{font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--red);margin-bottom:0.4rem;}
+.p-scroll-words{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;line-height:1.65;color:var(--ink);}
+
+/* ── PROPHET QUOTE (Level 3) ── */
+.p-prophet{background:rgba(26,46,80,0.07);border-left:4px solid var(--blue2);border-radius:0 8px 8px 0;padding:0.7rem 0.9rem;margin-bottom:0.85rem;}
+.p-prophet-q{font-family:'Lora',serif;font-style:italic;font-size:0.95rem;line-height:1.6;color:var(--blue);margin-bottom:0.4rem;}
+.p-prophet-by{font-family:'Cinzel',serif;font-size:0.66rem;color:var(--ink2);line-height:1.4;}
+.p-prophet-by span{font-size:0.58rem;color:rgba(30,18,6,0.5);}
+
+/* ── WHY IT MATTERS chain ── */
+.p-why{background:rgba(26,46,80,0.06);border:1.5px solid rgba(26,46,80,0.18);border-radius:9px;padding:0.7rem 0.9rem;margin-bottom:0.85rem;}
+.p-why-head{font-size:0.56rem;font-weight:900;letter-spacing:0.13em;text-transform:uppercase;color:var(--blue2);text-align:center;margin-bottom:0.45rem;}
+.p-why-row{font-size:0.8rem;line-height:1.55;color:#1a1008;margin-bottom:0.2rem;}
+.p-why-row b{color:var(--blue);}
+
+/* ── FALSE-PATH teaching hint ── */
+.q-falsehint{display:none;font-size:0.8rem;line-height:1.5;color:#7a1c1c;background:rgba(181,43,43,0.08);border:1px solid rgba(181,43,43,0.3);border-radius:8px;padding:0.5rem 0.7rem;margin-top:0.6rem;}
+.q-falsehint.show{display:block;animation:fhPop 0.3s ease;}
+.q-falsehint b{color:#7a1c1c;}
+@keyframes fhPop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LEVEL COMPLETE screen ── */
+#level-complete{display:none;position:fixed;inset:0;z-index:4000;background:rgba(8,5,15,0.88);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.5rem;}
+#level-complete.show{display:flex;}
+.lc-card{width:min(440px,94vw);background:linear-gradient(160deg,#1c2c4a,#101a30);border:2px solid var(--gold);border-radius:20px;padding:2rem 1.7rem;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,0.7);animation:tourPop 0.4s cubic-bezier(.2,1.3,.4,1);}
+.lc-art{font-size:3.4rem;margin-bottom:0.4rem;animation:tourBob 2s ease-in-out infinite;}
+.lc-title{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:700;color:var(--gold2);margin-bottom:0.5rem;}
+.lc-sub{font-size:0.98rem;line-height:1.6;color:rgba(240,228,194,0.85);margin-bottom:1.2rem;}
+.lc-sub b{color:#fff;}
+.lc-next{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.05em;color:var(--gold2);border-top:1px solid rgba(200,151,30,0.3);padding-top:1rem;margin-bottom:1.2rem;}
+.lc-next b{color:#fff;}
+.lc-btn{background:var(--gold);color:var(--blue);border:none;border-radius:30px;padding:0.7rem 2rem;font-family:'Cinzel',serif;font-size:0.92rem;font-weight:700;letter-spacing:0.05em;cursor:pointer;transition:transform 0.15s;}
+.lc-btn:hover{transform:scale(1.05);}
 </style>
 </head>
 <body>
@@ -526,6 +582,7 @@ header {
     </div>
   </div>
   <div class="gem-center">
+    <div class="level-pill" id="level-pill">Quest 1 · The Founding Treasure</div>
     <div class="gem-track" id="gem-track"></div>
     <div class="team-score" id="team-score">🤝 Team: 0 of 8 gems found together</div>
   </div>
@@ -539,6 +596,8 @@ header {
 <div class="split">
 <div class="scroll-area">
 <div class="document" id="doc">
+<div id="dyn-doc" style="display:none"></div>
+<div id="l1-doc">
 
   <!-- ═══ THE DECLARATION OF INDEPENDENCE (1776) ═══ -->
   <div style="text-align:center;margin-bottom:1.5rem;">
@@ -665,6 +724,7 @@ header {
   <div class="orn" style="margin-top:2rem">✦ ✦ ✦</div>
   <p style="font-family:'Lora',serif;font-style:italic;text-align:center;opacity:0.4;font-size:0.88rem;margin-top:0.4rem;color:var(--ink)">Done in Convention by the Unanimous Consent of the States present — Philadelphia, September 17, 1787</p>
 
+</div><!-- /l1-doc -->
 </div></div><!-- /scroll-area -->
 
   <aside class="side-panel" id="side-panel">
@@ -780,6 +840,17 @@ header {
  </div>
 </div>
 
+<!-- ═══ LEVEL COMPLETE (between quests) ═══ -->
+<div id="level-complete">
+  <div class="lc-card">
+    <div class="lc-art" id="lc-art">💎</div>
+    <div class="lc-title" id="lc-title">Quest 1 Complete!</div>
+    <div class="lc-sub" id="lc-sub"></div>
+    <div class="lc-next" id="lc-next"></div>
+    <button class="lc-btn" id="lc-btn">Begin Quest 2</button>
+  </div>
+</div>
+
 <div class="overlay" id="overlay" onclick="closeCard()"></div>
 
 <!-- ═══ HOW-TO-PLAY TOUR ═══ -->
@@ -805,7 +876,15 @@ header {
 </div>
 
 <script>
-const GEMS = [
+// ═══════════════════════════════════════════════════════════════
+//  THREE LEVELS — a doctrinal arc:
+//  L1 Founding (gems in the documents) → "What happened?"
+//  L2 Restoration (scripture scrolls)  → "Why did God care?"
+//  L3 Covenant (crown, living prophets) → "What is liberty FOR?"
+// ═══════════════════════════════════════════════════════════════
+
+// ── LEVEL 1 · THE FOUNDING QUEST (lives in the on-screen document) ──
+const L1_GEMS = [
   {
     id:"g8", gem:"💎", gemName:"The Creator Gem",
     title:"Rights Come From God",
@@ -919,6 +998,213 @@ const GEMS = [
     scripture:{ ref:"11th Article of Faith", text:"We claim the privilege of worshiping Almighty God according to the dictates of our own conscience, and allow all men the same privilege, let them worship how, where, or what they may." }
   }
 ];
+
+// ── LEVEL 2 · THE RESTORATION QUEST (scripture "scrolls") ──
+// Answers "Why did God care?" Each scroll shows the ACTUAL words, then asks a deeper question.
+const L2_GEMS = [
+  {
+    id:"r1", gem:"📜", gemName:"The Agency Scroll", art:"scroll",
+    title:"Liberty Protects Agency",
+    constQuote:"“…that every man may act in doctrine and principle… according to the moral agency which I have given unto him.”",
+    scroll:{ ref:"Doctrine & Covenants 101:78", words:"…that every man may act in doctrine and principle pertaining to futurity, according to the moral agency which I have given unto him, that every man may be accountable for his own sins in the day of judgment." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/United_States_Declaration_of_Independence.jpg?width=600",
+    imgBg:"linear-gradient(135deg,#2a1a40,#1a2e50)", emoji:"⚖️",
+    imgCredit:"D&C 101 — given in 1833, after the Saints were driven from Missouri",
+    explain:"The Lord said He set up the Constitution so <strong>every person could use their agency</strong> — the power to choose right from wrong — and be <strong>accountable</strong> to God. Freedom isn't just political; it's what lets us choose Him.",
+    why:{ doctrine:"God gave us moral agency.", matters:"Agency only works when no one forces your choices.", restoration:"A free land let Joseph Smith choose to ask God.", temple:"Covenants must be chosen freely — never forced." },
+    question:"Why did the Lord say He established the Constitution?",
+    choices:[ {e:"🕊️", t:"So people could use agency & be accountable", ok:true}, {e:"💰", t:"So America could be rich"}, {e:"⛪", t:"So one church could rule everyone"} ],
+    falsehint:"Liberty isn't about money or power — D&C 101 says it's so we can <b>choose</b> and be accountable to God.",
+    scripture:{ ref:"D&C 101:78", text:"…that every man may act… according to the moral agency which I have given unto him, that every man may be accountable for his own sins in the day of judgment." }
+  },
+  {
+    id:"r2", gem:"📜", gemName:"The Wise Men Scroll", art:"scroll",
+    title:"Wise Men, Raised Up",
+    constQuote:"“…by the hands of wise men whom I raised up unto this very purpose.”",
+    scroll:{ ref:"Doctrine & Covenants 101:80", words:"And for this purpose have I established the Constitution of this land, by the hands of wise men whom I raised up unto this very purpose, and redeemed the land by the shedding of blood." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Scene_at_the_Signing_of_the_Constitution_of_the_United_States.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#1a2e50,#0f1e38)", emoji:"📜",
+    imgCredit:"Signing of the Constitution, 1787",
+    explain:"The Lord said <strong>He</strong> raised up wise men to write the Constitution. It doesn't mean every leader was perfect — it means <strong>God worked through prepared people</strong> to build a place where agency would be safe.",
+    why:{ doctrine:"God prepares people to do His work.", matters:"Good conditions don't happen by accident — God prepares them.", restoration:"The wise men's work made the Restoration possible.", temple:"The same God who raised them up restored temple ordinances." },
+    question:"Who said He raised up wise men to establish the Constitution?",
+    choices:[ {e:"🙏", t:"The Lord", ok:true}, {e:"👑", t:"A king"}, {e:"🗳️", t:"The voters"} ],
+    falsehint:"In D&C 101:80 it is <b>the Lord Himself</b> speaking: 'wise men whom I raised up.'",
+    scripture:{ ref:"D&C 101:80", text:"…by the hands of wise men whom I raised up unto this very purpose…" }
+  },
+  {
+    id:"r3", gem:"📜", gemName:"The Just Law Scroll", art:"scroll",
+    title:"Liberty for All Mankind",
+    constQuote:"“…that law… which is constitutional… belonging to all mankind…”",
+    scroll:{ ref:"Doctrine & Covenants 98:5–6", words:"And that law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind, and is justifiable before me. Therefore, I, the Lord, justify you… in befriending that law which is the constitutional law of the land." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Panorama_of_United_States_Supreme_Court_Building_at_Dusk.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#3d5c3a,#1a2e50)", emoji:"🌍",
+    imgCredit:"D&C 98 — the Lord's word on constitutional law",
+    explain:"The Lord said constitutional law that protects freedom <strong>belongs to ALL mankind</strong> — not only America. Wherever people are free to follow God, that freedom is precious to Him.",
+    why:{ doctrine:"God-given freedom is for everyone, everywhere.", matters:"Religious freedom is a human right, not just an American one.", restoration:"The gospel could then go to every nation.", temple:"Today temples stand all over the world." },
+    question:"Is constitutional liberty only for America?",
+    choices:[ {e:"🌍", t:"No — it belongs to all mankind", ok:true}, {e:"🇺🇸", t:"Yes, only America"}, {e:"❓", t:"Nobody knows"} ],
+    falsehint:"D&C 98:5 says that freedom 'belongs to <b>all mankind</b>' — it's for every child of God.",
+    scripture:{ ref:"D&C 98:5–6", text:"…that law of the land which is constitutional… belongs to all mankind, and is justifiable before me." }
+  },
+  {
+    id:"r4", gem:"📜", gemName:"The Judges Scroll", art:"scroll",
+    title:"The Voice of the People",
+    constQuote:"“…to do your business by the voice of the people.”",
+    scroll:{ ref:"Mosiah 29:26", words:"Now it is not common that the voice of the people desireth anything contrary to that which is right; but it is common for the lesser part of the people to desire that which is not right; therefore this shall ye observe and make it your law—to do your business by the voice of the people." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Bill_of_Rights_Pg1of1_AC.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#4a2a10,#1a2e50)", emoji:"🗳️",
+    imgCredit:"King Mosiah taught government 'by the voice of the people'",
+    explain:"In the Book of Mormon, King Mosiah ended kings and set up <strong>judges chosen by the people</strong>. He warned that a wicked king leads people to sin. Power shared by the people is safer than power held by one.",
+    why:{ doctrine:"God favors government answerable to the people.", matters:"One unchecked ruler can lead a whole nation astray.", restoration:"Checks on power protect the freedom to worship.", temple:"A free people can gather and build temples." },
+    question:"How did King Mosiah say the people should run their government?",
+    choices:[ {e:"🗳️", t:"By the voice of the people", ok:true}, {e:"👑", t:"By one all-powerful king"}, {e:"💪", t:"By the strongest army"} ],
+    falsehint:"Mosiah 29 replaced kings with judges chosen 'by the <b>voice of the people</b>.'",
+    scripture:{ ref:"Mosiah 29:26", text:"…make it your law—to do your business by the voice of the people." }
+  },
+  {
+    id:"r5", gem:"📜", gemName:"The Conscience Scroll", art:"scroll",
+    title:"Worship by Conscience",
+    constQuote:"“…according to the dictates of our own conscience…”",
+    scroll:{ ref:"Articles of Faith 1:11", words:"We claim the privilege of worshiping Almighty God according to the dictates of our own conscience, and allow all men the same privilege, let them worship how, where, or what they may." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Statue_of_Liberty_7.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#2a1508,#3d5c3a)", emoji:"🕯️",
+    imgCredit:"The 11th Article of Faith",
+    explain:"We claim the right to worship <strong>by our own conscience</strong> — and we give <strong>everyone else</strong> that same right. Real freedom means letting others believe differently, too.",
+    why:{ doctrine:"Conscience is sacred and must be free.", matters:"You can't force a true belief — it has to be chosen.", restoration:"Joseph followed his conscience to the grove.", temple:"Worship in the temple is a free, willing offering." },
+    question:"The Articles of Faith say we let ALL people worship…",
+    choices:[ {e:"🕯️", t:"How, where, or what they may", ok:true}, {e:"🚫", t:"Only the way we do"}, {e:"🤐", t:"Not at all"} ],
+    falsehint:"The 11th Article of Faith says we allow all men to worship 'how, where, or what they <b>may</b>.'",
+    scripture:{ ref:"Articles of Faith 1:11", text:"We claim the privilege of worshiping Almighty God according to the dictates of our own conscience, and allow all men the same privilege…" }
+  },
+  {
+    id:"r6", gem:"📜", gemName:"The Title of Liberty Scroll", art:"scroll",
+    title:"In Memory of Our God",
+    constQuote:"“In memory of our God, our religion, and freedom, and our peace, our wives, and our children.”",
+    scroll:{ ref:"Alma 46:12", words:"And it came to pass that he rent his coat; and he took a piece thereof, and wrote upon it—In memory of our God, our religion, and freedom, and our peace, our wives, and our children—and he fastened it upon the end of a pole." },
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Scene_at_the_Signing_of_the_Constitution_of_the_United_States.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#7a1c1c,#2a1508)", emoji:"🚩",
+    imgCredit:"Captain Moroni raised the Title of Liberty (Alma 46)",
+    explain:"When a man named Amalickiah tried to become king, <strong>Captain Moroni</strong> made a flag — the Title of Liberty — and rallied people to defend their <strong>God, their religion, their freedom, and their families</strong>. Liberty is worth protecting.",
+    why:{ doctrine:"Freedom and faith are worth defending.", matters:"Liberty protects worship, homes, and children.", restoration:"The same things Moroni defended, the Saints later defended.", temple:"We protect freedom so families can be sealed forever." },
+    question:"What did Captain Moroni write on the Title of Liberty?",
+    choices:[ {e:"🚩", t:"Our God, religion, freedom & families", ok:true}, {e:"💰", t:"Gold and riches"}, {e:"⚔️", t:"A king's name"} ],
+    falsehint:"Alma 46:12 lists 'our God, our religion, and freedom… our wives, and our children.'",
+    scripture:{ ref:"Alma 46:12", text:"In memory of our God, our religion, and freedom, and our peace, our wives, and our children…" }
+  },
+  {
+    id:"r7", gem:"📜", gemName:"The Restoration Scroll", art:"scroll",
+    title:"A Boy Seeks God",
+    constQuote:"“I saw a pillar of light… I saw two Personages…”",
+    scroll:{ ref:"Joseph Smith—History 1:17", words:"…I saw a pillar of light exactly over my head, above the brightness of the sun, which descended gradually until it fell upon me… When the light rested upon me I saw two Personages, whose brightness and glory defy all description, standing above me in the air. One of them spake unto me, calling me by name and said, pointing to the other—This is My Beloved Son. Hear Him!" },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/fe5db8da0174bc36aff99e6ae7b55e337d9eb965/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#1a2e50,#3d5c3a)", emoji:"🌅",
+    imgCredit:"The First Vision, by Del Parson",
+    explain:"In a free land, a 14-year-old boy could read the Bible, kneel in a grove, and <strong>ask God</strong> — and Heavenly Father and Jesus Christ appeared. Religious freedom is the soil the <strong>Restoration</strong> grew in.",
+    why:{ doctrine:"God answers those who seek Him.", matters:"Without freedom to worship, Joseph couldn't have asked openly.", restoration:"This is the Restoration's first moment.", temple:"From this vision came the priesthood, ordinances, and temples." },
+    question:"What could Joseph Smith do because the land was free?",
+    choices:[ {e:"🙏", t:"Pray and ask God for himself", ok:true}, {e:"👑", t:"Become a king"}, {e:"💰", t:"Get rich quickly"} ],
+    falsehint:"Because worship was protected, Joseph could <b>seek God himself</b> — and the Father and the Son appeared.",
+    scripture:{ ref:"Joseph Smith—History 1:17", text:"…This is My Beloved Son. Hear Him!" }
+  },
+  {
+    id:"r8", gem:"📜", gemName:"The Temple Scroll", art:"scroll",
+    title:"Houses of the Lord",
+    constQuote:"“…that thy glory may rest down upon thy people…”",
+    scroll:{ ref:"Doctrine & Covenants 109:12–13", words:"That all people who shall enter upon the threshold of the Lord's house may feel thy power… and that they may grow up in thee, and receive a fulness of the Holy Ghost… that thy glory may rest down upon thy people." },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/2689b23c629431574fcf24d10e93422ed056abc0/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#3a2410,#1a2e50)", emoji:"🏛️",
+    imgCredit:"Dedicatory prayer of the Kirtland Temple (D&C 109)",
+    explain:"Once the Church was restored in a free land, the Saints <strong>built temples</strong> — holy houses where families are sealed together forever. Freedom led all the way to the temple.",
+    why:{ doctrine:"The temple is the house of the Lord.", matters:"Temples need a free land where the Church can gather.", restoration:"The Restoration brought back temple ordinances.", temple:"Here families are sealed for eternity." },
+    question:"What did the Saints build once they were free to worship?",
+    choices:[ {e:"🏛️", t:"Temples — houses of the Lord", ok:true}, {e:"🏰", t:"Castles for a king"}, {e:"🏦", t:"Banks for money"} ],
+    falsehint:"A free Church could gather and build <b>temples</b> — the house of the Lord (D&C 109).",
+    scripture:{ ref:"D&C 109:13", text:"…that thy glory may rest down upon thy people…" }
+  }
+];
+
+// ── LEVEL 3 · THE COVENANT QUEST (the "crown"; living prophets) ──
+// Answers "What is freedom FOR?" — covenant life, and why religious freedom matters NOW.
+const L3_GEMS = [
+  {
+    id:"c1", gem:"👑", gemName:"The Family Crown", art:"crown",
+    title:"Families, Forever",
+    constQuote:"“…sealed as families, faithful to covenants made in a temple…”",
+    scroll:{ ref:"President Russell M. Nelson", words:"Because of the restoration of the priesthood, you and I can be sealed to our loved ones for all eternity!" },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/2689b23c629431574fcf24d10e93422ed056abc0/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#7a1c1c,#1a2e50)", emoji:"👨‍👩‍👧‍👦",
+    imgCredit:"President Russell M. Nelson",
+    explain:"This is the heart of it: in the temple, <strong>families are sealed together forever</strong>. Every freedom in the whole game was protecting <em>this</em>.",
+    prophet:{ who:"President Russell M. Nelson", quote:"Because of the restoration of the priesthood, you and I can be sealed to our loved ones for all eternity!", src:"“The Temple and Your Spiritual Foundation,” Oct 2021" },
+    why:{ doctrine:"Families can be eternal.", matters:"This is what all the freedom was FOR.", restoration:"The sealing power was restored for this.", temple:"It happens in the house of the Lord." },
+    question:"In the temple, families can be sealed together for how long?",
+    choices:[ {e:"♾️", t:"Forever — for all eternity", ok:true}, {e:"📅", t:"Just one year"}, {e:"🏠", t:"Only while at home"} ],
+    falsehint:"President Nelson taught we can be sealed to our loved ones for <b>all eternity</b>.",
+    scripture:{ ref:"President Russell M. Nelson", text:"Because of the restoration of the priesthood, you and I can be sealed to our loved ones for all eternity!" }
+  },
+  {
+    id:"c2", gem:"👑", gemName:"The Worship Crown", art:"crown",
+    title:"Why Religious Freedom Matters Now",
+    constQuote:"“…the free exercise of religion is… essential to God's plan of salvation.”",
+    scroll:{ ref:"President Dallin H. Oaks", words:"The fulfillment of God's plan of salvation is only possible under the free exercise of religion. For us, the free exercise of religion is not just a basic and cherished principle of the Constitution; it is essential to God's plan of salvation." },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/fe5db8da0174bc36aff99e6ae7b55e337d9eb965/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#1a2e50,#2a4a7f)", emoji:"🕊️",
+    imgCredit:"President Dallin H. Oaks",
+    explain:"A living prophet's counselor taught that <strong>religious freedom is essential to God's plan</strong> — and that it protects <em>all</em> our other freedoms. That's why we must guard it today.",
+    prophet:{ who:"President Dallin H. Oaks", quote:"The free exercise of religion is… essential to God's plan of salvation.", src:"Religious-freedom addresses; see “Defending Our Divinely Inspired Constitution,” Apr 2021" },
+    why:{ doctrine:"Religious freedom is essential to God's plan.", matters:"It is the right all other rights depend on.", restoration:"It made the Restoration possible.", temple:"It keeps temples and worship open." },
+    question:"Why is religious freedom so important to us?",
+    choices:[ {e:"🕊️", t:"It's essential to God's plan of salvation", ok:true}, {e:"🎉", t:"It makes parties more fun"}, {e:"💵", t:"It saves money"} ],
+    falsehint:"President Oaks taught religious freedom is <b>essential to God's plan of salvation</b>.",
+    scripture:{ ref:"President Dallin H. Oaks", text:"The free exercise of religion is… essential to God's plan of salvation." }
+  },
+  {
+    id:"c3", gem:"👑", gemName:"The Gathering Crown", art:"crown",
+    title:"Gathering Israel",
+    constQuote:"“…the greatest challenge, the greatest cause… on earth.”",
+    scroll:{ ref:"President Russell M. Nelson", words:"Anytime you do anything that helps anyone—on either side of the veil—take a step toward making covenants with God and receiving their essential baptismal and temple ordinances, you are helping to gather Israel." },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/2689b23c629431574fcf24d10e93422ed056abc0/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#3d5c3a,#1a2e50)", emoji:"🌾",
+    imgCredit:"President Russell M. Nelson, to the youth",
+    explain:"The living prophet asked young people to help <strong>gather Israel</strong> — helping others come to Christ and make covenants. A free world lets that work go forward.",
+    prophet:{ who:"President Russell M. Nelson", quote:"…you are helping to gather Israel.", src:"“Hope of Israel,” worldwide youth devotional, June 2018" },
+    why:{ doctrine:"We help gather God's children to Him.", matters:"Free nations let missionaries teach.", restoration:"The gathering is the Restoration in action.", temple:"Ordinances seal the gathered family of God." },
+    question:"When you help someone come to Christ and make covenants, you are…",
+    choices:[ {e:"🌾", t:"Helping to gather Israel", ok:true}, {e:"🏆", t:"Winning a contest"}, {e:"💰", t:"Earning money"} ],
+    falsehint:"President Nelson taught that helping others make covenants <b>helps gather Israel</b>.",
+    scripture:{ ref:"President Russell M. Nelson", text:"…you are helping to gather Israel." }
+  },
+  {
+    id:"c4", gem:"👑", gemName:"The Covenant Crown", art:"crown",
+    title:"What Freedom Is FOR",
+    constQuote:"“…the safest place to be spiritually is living inside your temple covenants.”",
+    scroll:{ ref:"President Russell M. Nelson", words:"Whenever any kind of upheaval occurs in your life, the safest place to be spiritually is living inside your temple covenants!" },
+    imgUrl:"https://www.churchofjesuschrist.org/imgs/2689b23c629431574fcf24d10e93422ed056abc0/full/800%2C/0/default",
+    imgBg:"linear-gradient(135deg,#b5701c,#7a1c1c)", emoji:"👑",
+    imgCredit:"President Russell M. Nelson",
+    explain:"Here's the final answer the whole quest was leading to: freedom is for <strong>choosing and keeping covenants with God</strong>. That is what makes us safe, and what makes families eternal.",
+    prophet:{ who:"President Russell M. Nelson", quote:"The safest place to be spiritually is living inside your temple covenants!", src:"“The Temple and Your Spiritual Foundation,” Oct 2021" },
+    why:{ doctrine:"Freedom is for keeping covenants.", matters:"Not doing whatever we want — choosing God.", restoration:"Covenants were restored for us to keep.", temple:"Temple covenants bind us to God and family." },
+    question:"What is freedom finally FOR?",
+    choices:[ {e:"🤝", t:"Choosing and keeping covenants with God", ok:true}, {e:"😎", t:"Doing whatever I want"}, {e:"💪", t:"Being stronger than others"} ],
+    falsehint:"Freedom isn't for doing whatever we want — it's for <b>choosing and keeping covenants</b> with God.",
+    scripture:{ ref:"President Russell M. Nelson", text:"The safest place to be spiritually is living inside your temple covenants!" }
+  }
+];
+
+// Level config — different artifact + framing per level.
+const LEVELS = {
+  1:{ name:"The Founding Treasure",  sub:"Find the Gems",        gems:L1_GEMS, art:"💎", mode:"doc",
+      intro:"Find the gems hidden in the Declaration & the Constitution. They answer: <b>What happened?</b>" },
+  2:{ name:"The Restoration Key",    sub:"Read the Records",     gems:L2_GEMS, art:"📜", mode:"list",
+      intro:"You found the treasure. Now learn <b>why the Lord protected it.</b> Tap each ancient scroll to read the real words." },
+  3:{ name:"The Covenant Crown",     sub:"Keep the Covenant",    gems:L3_GEMS, art:"👑", mode:"list",
+      intro:"The final quest. Living prophets teach <b>what freedom is FOR</b> — covenants, families, and Zion." }
+};
+
+let level = 1;
+let GEMS = L1_GEMS;   // active level's gems (engine reads this)
 
 // ───────────── PLAYER SETUP (1–4 players, pick avatar + name) ─────────────
 // Each color theme: pc=main, ps=soft bg, pb=border.
@@ -1041,8 +1327,57 @@ function startQuest() {
   applyTheme();
   document.getElementById('char-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-  buildGemTrack();
+  loadLevel(1);
   startTour();
+}
+
+// Load a level: point the engine at its gems, render its document, reset progress.
+function loadLevel(n) {
+  level = n;
+  GEMS = LEVELS[n].gems;
+  unlocked = new Set();
+  currentGemId = null;
+  closeCard();
+  cur = 0; applyTheme();
+
+  // Level 1 uses the hand-built document already in the page;
+  // Levels 2 & 3 render their scrolls/crowns dynamically into the same area.
+  const l1doc = document.getElementById('l1-doc');
+  const dynDoc = document.getElementById('dyn-doc');
+  if (LEVELS[n].mode === 'doc') {
+    l1doc.style.display = '';
+    dynDoc.style.display = 'none';
+  } else {
+    l1doc.style.display = 'none';
+    dynDoc.style.display = '';
+    dynDoc.innerHTML = renderLevelDoc(n);
+  }
+  document.getElementById('level-pill').textContent = `Quest ${n} · ${LEVELS[n].name}`;
+  buildGemTrack();
+  document.querySelector('.scroll-area').scrollTop = 0;
+}
+
+// Build the tappable "records" page for Levels 2 & 3.
+function renderLevelDoc(n) {
+  const L = LEVELS[n];
+  const items = L.gems.map(g => `
+    <div class="record ${g.art}" data-id="${g.id}" onclick="openCard(this)">
+      <div class="record-art" id="badge-${g.id}">${L.art}</div>
+      <div class="record-body">
+        <div class="record-name">${g.gemName.replace(/^The /,'').replace(/ (Scroll|Crown|Gem)$/,'')}</div>
+        <div class="record-quote">${g.constQuote}</div>
+        <div class="record-ref">${g.scroll ? g.scroll.ref : ''}</div>
+      </div>
+      <div class="record-go">tap ➜</div>
+    </div>`).join('');
+  return `
+    <div style="text-align:center;margin-bottom:1.3rem;">
+      <div class="doc-eyebrow-d">Quest ${n} of 3</div>
+      <div class="doc-main" style="font-size:2.1rem">${L.name}</div>
+      <div class="doc-sub">${L.intro}</div>
+      <div class="orn">✦ ✦ ✦</div>
+    </div>
+    <div class="record-list">${items}</div>`;
 }
 
 // ───────────── HOW-TO-PLAY TOUR ─────────────
@@ -1050,7 +1385,8 @@ const TOUR = [
   { emoji:'📜', title:'Two Special Papers', text:'You\'re looking at the <b>Declaration of Independence</b> and the <b>Constitution</b> — the papers that made America free.' },
   { emoji:'💎', title:'Find the Hidden Gems', text:'See the <b>gold underlined words</b>? Tap one to open a gem. There are <b>8 gems</b> to find!' },
   { emoji:'👆', title:'Tap the Right Answer', text:'Each gem asks one easy question. Just <b>tap the picture</b> you think is right — no spelling needed!' },
-  { emoji:'🤝', title:'Take Turns Together', text:'Players take turns automatically. Work as a <b>team</b> to find all 8 gems and unlock the surprise at the end!' }
+  { emoji:'🤝', title:'Take Turns Together', text:'Players take turns automatically. Work as a <b>team</b>!' },
+  { emoji:'🗝️', title:'Three Quests', text:'Quest 1 finds the <b>gems</b>. Beat it to unlock Quest 2 (the <b>scrolls</b>) and Quest 3 (the <b>crown</b>) — each one goes deeper!' }
 ];
 let tourIdx = 0;
 
@@ -1097,13 +1433,14 @@ function buildGemTrack() {
     s.title = unlocked.has(g.id) ? g.gemName : 'Locked';
     t.appendChild(s);
   });
+  const noun = level === 2 ? 'scroll' : level === 3 ? 'crown' : 'gem';
   const left = GEMS.length - unlocked.size;
   document.getElementById('hint-count').textContent =
-    left === 0 ? 'all gems found!' : left + ' gem' + (left !== 1 ? 's' : '') + ' left';
+    left === 0 ? `all ${noun}s found!` : left + ' ' + noun + (left !== 1 ? 's' : '') + ' left';
   const ts = document.getElementById('team-score');
   if (ts) ts.textContent = unlocked.size === GEMS.length
-    ? `🤝 Team: all ${GEMS.length} gems found together!`
-    : `🤝 Team: ${unlocked.size} of ${GEMS.length} gems found together`;
+    ? `🤝 Team: all ${GEMS.length} ${noun}s found together!`
+    : `🤝 Team: ${unlocked.size} of ${GEMS.length} ${noun}s found together`;
 }
 
 function openCard(el) {
@@ -1125,18 +1462,34 @@ function openCard(el) {
     <img src="${d.imgUrl}" alt="${d.imgCredit}" onerror="this.style.display='none'" style="position:absolute;inset:0;z-index:1;width:100%;height:182px;object-fit:cover;">
     <div class="p-img-zoom">🔍 Tap to see full picture</div>`;
 
+  const art = LEVELS[level].art;
   let body = `
-    <span class="p-player-tag">${me.avatar} ${me.name} · 💎 ${d.gemName}</span>
+    <span class="p-player-tag">${me.avatar} ${me.name} · ${art} ${d.gemName}</span>
     <div class="p-title">${d.title}</div>
-    <div class="p-const">${d.constQuote}</div>
-    <div class="p-explain">${d.explain}</div>
-    <div class="p-thesis">
-      <div class="p-thesis-head">✦ Remember the big idea ✦</div>
-      <div class="p-thesis-chain">🙏 <b>God</b> → 📜 Constitution → 🕊️ <b>freedom</b> → ✨ <b>the Church</b> → 🏛️ <b>temples</b> → 👨‍👩‍👧‍👦 <b>family forever!</b></div>
-    </div>`;
+    <div class="p-const">${d.constQuote}</div>`;
+
+  // Level 2 & 3: the tap-to-open SOURCE SCROLL (actual words / prophet quote)
+  if (d.scroll) {
+    body += `
+      <div class="p-scroll">
+        <div class="p-scroll-head">📜 The actual words — <b>${d.scroll.ref}</b></div>
+        <div class="p-scroll-words">${d.scroll.words}</div>
+      </div>`;
+  }
+
+  body += `<div class="p-explain">${d.explain}</div>`;
+
+  // Living-prophet block (Level 3)
+  if (d.prophet) {
+    body += `
+      <div class="p-prophet">
+        <div class="p-prophet-q">“${d.prophet.quote}”</div>
+        <div class="p-prophet-by">— ${d.prophet.who}<br><span>${d.prophet.src}</span></div>
+      </div>`;
+  }
 
   if (done) {
-    body += `<div class="already-done">💎 Gem already unlocked — great work!</div>`;
+    body += `<div class="already-done">${art} ${d.gemName} already unlocked — great work!</div>`;
   } else {
     // scramble the choice order fresh each time
     const shuffled = d.choices.map(c => c).sort(() => Math.random() - 0.5);
@@ -1149,11 +1502,30 @@ function openCard(el) {
         <div class="q-label">${me.avatar} ${me.name} — tap the right answer!</div>
         <div class="q-prompt">${d.question.replace('_______','<span class="q-blank">_______</span>')}</div>
         <div class="q-choices">${choiceBtns}</div>
+        <div class="q-falsehint" id="q-falsehint"></div>
       </div>
       <div class="gem-reveal" id="gem-reveal">
-        <span class="gem-reveal-icon">💎</span>
+        <span class="gem-reveal-icon">${art}</span>
         <div class="gem-reveal-text">${d.gemName} Unlocked!</div>
         <div class="gem-reveal-turn" id="gem-reveal-turn"></div>
+      </div>`;
+  }
+
+  // "Why it matters" doctrinal chain (all levels that have it)
+  if (d.why) {
+    body += `
+      <div class="p-why">
+        <div class="p-why-head">✦ Why it matters ✦</div>
+        <div class="p-why-row"><b>Doctrine:</b> ${d.why.doctrine}</div>
+        <div class="p-why-row"><b>Why it matters:</b> ${d.why.matters}</div>
+        <div class="p-why-row"><b>Restoration:</b> ${d.why.restoration}</div>
+        <div class="p-why-row"><b>Temple:</b> ${d.why.temple}</div>
+      </div>`;
+  } else {
+    body += `
+      <div class="p-thesis">
+        <div class="p-thesis-head">✦ Remember the big idea ✦</div>
+        <div class="p-thesis-chain">🙏 <b>God</b> → 📜 Constitution → 🕊️ <b>freedom</b> → ✨ <b>the Church</b> → 🏛️ <b>temples</b> → 👨‍👩‍👧‍👦 <b>family forever!</b></div>
       </div>`;
   }
 
@@ -1177,11 +1549,16 @@ function pickChoice(btn) {
   if (btn.dataset.ok === '1') {
     btn.classList.add('correct');
     document.querySelectorAll('.q-choice').forEach(b => b.disabled = true);
+    const fh = document.getElementById('q-falsehint');
+    if (fh) fh.classList.remove('show');
     unlockGem(id, d);
   } else {
     btn.classList.add('wrong');
     btn.disabled = true; // remove the wrong one so it gets easier, not harder
     setTimeout(() => btn.classList.remove('wrong'), 400);
+    // false-path teaching: explain WHY it's wrong (first principles)
+    const fh = document.getElementById('q-falsehint');
+    if (fh && d.falsehint) { fh.innerHTML = '💡 ' + d.falsehint; fh.classList.add('show'); }
   }
 }
 
@@ -1192,12 +1569,16 @@ function unlockGem(id, d) {
   if (badge) { badge.classList.remove('locked'); badge.classList.add('lit'); }
   const hs = document.querySelector(`.hs[data-id="${id}"]`);
   if (hs) hs.classList.add('done');
+  const rec = document.querySelector(`.record[data-id="${id}"]`);
+  if (rec) rec.classList.add('done');
   const rev = document.getElementById('gem-reveal');
   if (rev) rev.classList.add('show');
   buildGemTrack();
 
   if (unlocked.size === GEMS.length) {
-    setTimeout(showVictory, 1300);
+    // Level finished. L1 & L2 unlock the next level; L3 is the grand finale.
+    if (level < 3) setTimeout(() => showLevelComplete(level), 1100);
+    else setTimeout(showVictory, 1300);
     return;
   }
 
@@ -1210,19 +1591,41 @@ function unlockGem(id, d) {
   nextTurn();
 }
 
+// Between-levels screen: celebrate, then unlock the next quest.
+function showLevelComplete(justFinished) {
+  closeCard();
+  const next = justFinished + 1;
+  const L = LEVELS[next];
+  document.getElementById('lc-art').textContent = LEVELS[justFinished].art;
+  document.getElementById('lc-title').textContent = `Quest ${justFinished} Complete!`;
+  document.getElementById('lc-sub').innerHTML =
+    justFinished === 1
+      ? `You found the treasure. Now learn <b>why the Lord protected it.</b>`
+      : `You read the records. Now discover <b>what freedom is FOR.</b>`;
+  document.getElementById('lc-next').innerHTML =
+    `Unlock Quest ${next}: <b>${L.name}</b> ${L.art}`;
+  document.getElementById('lc-btn').textContent = `Begin Quest ${next} ${L.art}`;
+  document.getElementById('lc-btn').onclick = () => {
+    document.getElementById('level-complete').classList.remove('show');
+    loadLevel(next);
+  };
+  document.getElementById('level-complete').classList.add('show');
+}
+
 let rainTimer = null;
 function showVictory() {
   closeCard();
   const names = players.map(p => `${p.avatar} ${p.name}`);
   const list = names.length === 1 ? names[0]
     : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
-  document.getElementById('v-sub').textContent = `${list} found all 8 gems — together!`;
+  const total = L1_GEMS.length + L2_GEMS.length + L3_GEMS.length;
+  document.getElementById('v-sub').textContent = `${list} completed all 3 quests — together!`;
 
-  // roster: everyone + their gem count
+  // roster: everyone + their gem count (running total across all 3 levels)
   document.getElementById('v-roster').innerHTML = players.map(p =>
     `<div class="v-pl"><div class="v-pl-av">${p.avatar}</div>
        <div class="v-pl-name">${p.name}</div>
-       <div class="v-pl-gems">💎 ${p.gems}</div></div>`).join('');
+       <div class="v-pl-gems">${p.gems} found</div></div>`).join('');
 
   document.getElementById('victory').classList.add('show');
   startEmojiRain();
@@ -1262,13 +1665,15 @@ function restart() {
   players.forEach(p => p.gems = 0);
   stopEmojiRain();
   document.getElementById('victory').classList.remove('show');
-  GEMS.forEach(g => {
+  document.getElementById('level-complete').classList.remove('show');
+  // reset every level's badges/records to locked
+  [...L1_GEMS, ...L2_GEMS, ...L3_GEMS].forEach(g => {
     const b = document.getElementById('badge-' + g.id);
-    if (b) { b.className = 'gem-badge locked'; }
+    if (b) { b.classList.remove('lit'); b.classList.add('locked'); }
     const h = document.querySelector(`.hs[data-id="${g.id}"]`);
     if (h) h.classList.remove('done','active');
   });
-  buildGemTrack();
+  level = 1; GEMS = L1_GEMS;
   closeCard();
   document.getElementById('char-screen').style.display = 'flex';
   document.getElementById('main-app').style.display = 'none';
