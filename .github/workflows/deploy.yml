@@ -11,6 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install function dependencies
+        run: npm install --omit=dev
+
       - name: Deploy to Netlify (production)
         run: npx --yes netlify-cli@latest deploy --dir=. --prod --message "Deploy ${{ github.sha }}"
         env:

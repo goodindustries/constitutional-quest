@@ -5,10 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
 <title>Constitutional Quest</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📜</text></svg>">
-<meta name="description" content="A treasure-hunt game for kids: find 8 gems in the Declaration of Independence and the Constitution, and learn why religious freedom matters.">
+<meta name="description" content="A faith-building treasure-hunt game for kids and families: discover the Declaration, the Constitution, and how religious freedom enabled the Restoration — 3 quests from the Founding to forever families.">
 <meta property="og:title" content="The Constitutional Quest">
-<meta property="og:description" content="Find 8 gems in the Declaration &amp; Constitution — a faith-building game for kids.">
+<meta property="og:description" content="A 3-quest treasure hunt for FHE: the Founding, the Restoration, and the Covenant. Discover how God protected freedom so families can be together forever.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://constitutional-quest-lds.netlify.app">
+<meta property="og:image" content="https://constitutional-quest-lds.netlify.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Constitutional Quest">
+<meta name="twitter:description" content="A 3-quest treasure hunt for FHE — discover how God protected freedom so families can be together forever.">
+<meta name="twitter:image" content="https://constitutional-quest-lds.netlify.app/og.png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -593,6 +601,7 @@ header {
 .share-btn:hover{background:rgba(26,46,80,0.14);}
 .v-share{margin-top:0.4rem;padding:0.55rem 1.4rem;border-radius:30px;background:rgba(255,255,255,0.1);border:1.5px solid var(--gold2);color:var(--gold2);font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;transition:background 0.15s;}
 .v-share:hover{background:rgba(255,255,255,0.18);}
+.share-count{margin-top:0.5rem;font-size:0.62rem;letter-spacing:0.08em;color:rgba(240,228,194,0.45);font-family:'Nunito',sans-serif;font-weight:700;}
 
 /* ── RESPONSIVE: phones / small screens ── */
 @media(max-width:760px){
@@ -923,6 +932,7 @@ header {
   </div>
 
   <button class="v-share" onclick="shareWin(this)">↗ Share our victory</button>
+  <div class="share-count" id="share-count"></div>
   <button class="v-restart" onclick="restart()">Play Again ✦</button>
  </div>
 </div>
@@ -1440,7 +1450,8 @@ function startQuest() {
   stopPreview();
   document.getElementById('char-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-  // CHEAT: load with #level2 or #level3 in the URL to jump straight there
+  // CHEAT: load with #level2 / #level3 / #finale in the URL to jump straight there
+  if (/finale|win/i.test(location.hash)) { cheat('win'); return; }
   const m = (location.hash.match(/level\s*([123])/i) || [])[1];
   const startLevel = m ? Number(m) : 1;
   loadLevel(startLevel);
@@ -1458,6 +1469,15 @@ function cheat(n) {
     stopPreview();
   }
   endTour();
+  // cheat('win') / cheat('finale') jumps straight to the victory screen
+  if (n === 'win' || n === 'finale' || n === 4) {
+    // give each player some gems so the roster looks real
+    players.forEach((p, i) => p.gems = [3,3,2,2][i] || 2);
+    level = 3; GEMS = L3_GEMS;
+    showVictory();
+    console.log('🏁 Cheat: jumped to the finale');
+    return;
+  }
   loadLevel(n || 2);
   console.log(`🚀 Cheat: jumped to Quest ${n || 2} — ${LEVELS[n || 2].name}`);
 }
@@ -1580,6 +1600,23 @@ function stopPreview() { clearInterval(pvTimer); }
 // ───────────── SHARING (canvas-rendered image card) ─────────────
 const SHARE_URL = 'https://constitutional-quest-lds.netlify.app';
 
+// Count a share on the Netlify Function (fire-and-forget) and refresh the badge.
+// No-op when opened from file:// (the API only exists on the deployed site).
+const HAS_API = location.protocol === 'http:' || location.protocol === 'https:';
+function countShare() {
+  if (!HAS_API) return;
+  fetch('/api/shares', { method: 'POST' })
+    .then(r => r.json()).then(d => updateShareBadge(d.count)).catch(() => {});
+}
+function loadShareCount() {
+  if (!HAS_API) return;
+  fetch('/api/shares').then(r => r.json()).then(d => updateShareBadge(d.count)).catch(() => {});
+}
+function updateShareBadge(n) {
+  const el = document.getElementById('share-count');
+  if (el && typeof n === 'number') el.textContent = `🌎 Shared ${n.toLocaleString()} times`;
+}
+
 function flashBtn(btn, msg) {
   if (!btn) return;
   const old = btn.innerHTML; btn.innerHTML = msg;
@@ -1664,7 +1701,7 @@ async function shareCard(card, fallbackText, btn) {
   if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: 'The Constitutional Quest', text: `${fallbackText}\n${SHARE_URL}` });
-      flashBtn(btn, '✓ Shared!'); return;
+      countShare(); flashBtn(btn, '✓ Shared!'); return;
     } catch (e) { if (e.name === 'AbortError') { flashBtn(btn, '↗ Share this'); return; } }
   }
   // Fallback: download the image + copy the text
@@ -1673,9 +1710,9 @@ async function shareCard(card, fallbackText, btn) {
     a.href = URL.createObjectURL(blob); a.download = 'constitutional-quest.png';
     a.click(); URL.revokeObjectURL(a.href);
     try { await navigator.clipboard.writeText(`${fallbackText}\n${SHARE_URL}`); } catch (e) {}
-    flashBtn(btn, '✓ Image saved!');
+    countShare(); flashBtn(btn, '✓ Image saved!');
   } else {
-    try { await navigator.clipboard.writeText(`${fallbackText}\n${SHARE_URL}`); flashBtn(btn, '✓ Copied!'); }
+    try { await navigator.clipboard.writeText(`${fallbackText}\n${SHARE_URL}`); countShare(); flashBtn(btn, '✓ Copied!'); }
     catch (e) { flashBtn(btn, '↗ Share this'); }
   }
 }
@@ -1919,6 +1956,7 @@ function showVictory() {
 
   document.getElementById('victory').classList.add('show');
   startEmojiRain();
+  loadShareCount();
 }
 
 function startEmojiRain() {

@@ -169,6 +169,9 @@ check(await cheatPage.$eval('#level-pill', e => /Restoration Key/.test(e.textCon
 // and cheat(3) from console
 await cheatPage.evaluate(() => cheat(3)); await wait(200);
 check(await cheatPage.$eval('#level-pill', e => /Covenant Crown/.test(e.textContent)), 'cheat(3) console code jumps to Quest 3');
+// cheat('win') jumps straight to the finale
+await cheatPage.evaluate(() => cheat('win')); await wait(300);
+check(await cheatPage.$eval('#victory', e => e.classList.contains('show')), "cheat('win') jumps to the finale");
 await cheatPage.close();
 
 await browser.close();
