@@ -109,6 +109,17 @@ check(total === 20, `players found all 20 across 3 levels (got ${total})`);
 check(await page.$('.v-share'), 'finale Share button present');
 check(await page.$eval('.v-photo', img => img.naturalWidth > 0), 'finale photo loaded');
 
+// canvas share card actually renders a PNG blob
+const cardOk = await page.evaluate(async () => {
+  const blob = await makeShareCard({ emoji:'🏛️', title:'Test', quote:'Hello world', ref:'— ref', footer:'x' });
+  return blob && blob.type === 'image/png' && blob.size > 1000;
+});
+check(cardOk, 'share card renders a real PNG image (canvas)');
+
+// About has the Collaborate GitHub link
+const aboutHtml = await page.$eval('#about-modal', e => e.innerHTML);
+check(/Collaborate here/.test(aboutHtml) && /github\.com\/goodindustries/.test(aboutHtml), 'About shows Collaborate GitHub link');
+
 await page.screenshot({ path: 'finale.png' });
 log(true, 'saved finale.png');
 
@@ -117,6 +128,17 @@ await page.evaluate(()=>restart()); await wait(300);
 check(await page.$eval('#char-screen', e => e.style.display !== 'none'), 'Play Again → setup screen');
 
 check(errors.length === 0, 'no JS/console errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
+
+// ── CHEAT CODE: #level2 jumps straight to Quest 2 ──
+const cheatPage = await browser.newPage();
+await cheatPage.goto(URL + '#level2', { waitUntil: 'networkidle0' });
+await cheatPage.evaluate(() => { setCount(1); startQuest(); });
+await wait(300);
+check(await cheatPage.$eval('#level-pill', e => /Restoration Key/.test(e.textContent)), 'cheat #level2 jumps straight to Quest 2');
+// and cheat(3) from console
+await cheatPage.evaluate(() => cheat(3)); await wait(200);
+check(await cheatPage.$eval('#level-pill', e => /Covenant Crown/.test(e.textContent)), 'cheat(3) console code jumps to Quest 3');
+await cheatPage.close();
 
 await browser.close();
 console.log('\n' + (fails === 0 ? '🎉 ALL CHECKS PASSED' : `⚠️  ${fails} CHECK(S) FAILED`));

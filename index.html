@@ -926,7 +926,8 @@ header {
       <p>Hi, I'm <b>Reif Tauati</b>. This game is a fun little project I built to teach my kids during FHE — aligned with the First Presidency's guidance to give “instruction about the significance of the Declaration of Independence, the Constitution, and related events that enabled the Restoration of the Church.”</p>
       <p>I barely understand the lingo of these documents, so imagine trying to teach it to kids!! This game is the result of my assignment to ‘give the lesson’ at our weekly FHE. I got by with a little help from my friend Claude. 🙂</p>
       <p>My main work is here: <a href="https://thegoodproject.net" target="_blank" rel="noopener">thegoodproject.net</a><br>
-         Reach me: <a href="mailto:reif@thegoodproject.net">reif@thegoodproject.net</a></p>
+         Reach me: <a href="mailto:reif@thegoodproject.net">reif@thegoodproject.net</a><br>
+         Collaborate here: <a href="https://github.com/goodindustries/constitutional-quest" target="_blank" rel="noopener">GitHub</a></p>
       <p>I hope this brings some laughter, some joy, and a greater appreciation for the Lord's hand in all of this.</p>
       <p class="about-sign">— Brother Reif</p>
     </div>
@@ -1418,8 +1419,26 @@ function startQuest() {
   stopPreview();
   document.getElementById('char-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-  loadLevel(1);
-  startTour();
+  // CHEAT: load with #level2 or #level3 in the URL to jump straight there
+  const m = (location.hash.match(/level\s*([123])/i) || [])[1];
+  const startLevel = m ? Number(m) : 1;
+  loadLevel(startLevel);
+  if (startLevel === 1) startTour();          // skip the tour when cheating ahead
+}
+
+// CHEAT CODE — call cheat(2) or cheat(3) from the browser console at any time.
+// Auto-creates one player if you haven't set up, and jumps to that level.
+function cheat(n) {
+  if (!players.length) {
+    playerCount = 1;
+    players = [{ name:'Tester', avatar:'🦖', theme:0, gems:0 }];
+    document.getElementById('char-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    stopPreview();
+  }
+  endTour();
+  loadLevel(n || 2);
+  console.log(`🚀 Cheat: jumped to Quest ${n || 2} — ${LEVELS[n || 2].name}`);
 }
 
 // Load a level: point the engine at its gems, render its document, reset progress.
@@ -1537,34 +1556,132 @@ function startPreview() {
 }
 function stopPreview() { clearInterval(pvTimer); }
 
-// ───────────── SHARING ─────────────
+// ───────────── SHARING (canvas-rendered image card) ─────────────
 const SHARE_URL = 'https://constitutional-quest-lds.netlify.app';
-// Share a bit of text + the game link. Uses the native share sheet on phones,
-// falls back to copying to clipboard on desktop.
-async function shareText(text, btn) {
-  const payload = { title: 'The Constitutional Quest', text, url: SHARE_URL };
-  try {
-    if (navigator.share) { await navigator.share(payload); return; }
-    await navigator.clipboard.writeText(`${text}\n${SHARE_URL}`);
-    flashBtn(btn, '✓ Copied!');
-  } catch (e) { /* user cancelled — ignore */ }
-}
+
 function flashBtn(btn, msg) {
   if (!btn) return;
   const old = btn.innerHTML; btn.innerHTML = msg;
-  setTimeout(() => { btn.innerHTML = old; }, 1600);
+  setTimeout(() => { btn.innerHTML = old; }, 1800);
 }
-// Share the current gem's truth.
+
+// Word-wrap helper for canvas text.
+function wrapLines(ctx, text, maxW) {
+  const words = text.split(' '); const lines = []; let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Draw a branded share card on a canvas and return it as a Blob.
+function makeShareCard({ emoji, title, quote, ref, footer }) {
+  const W = 1080, H = 1080;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+
+  // background — deep navy radial
+  const g = ctx.createRadialGradient(W*0.5, H*0.42, 80, W*0.5, H*0.5, W*0.75);
+  g.addColorStop(0, '#1a2e50'); g.addColorStop(1, '#08050f');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // gold border frame
+  ctx.strokeStyle = '#c8971e'; ctx.lineWidth = 8;
+  ctx.strokeRect(40, 40, W-80, H-80);
+
+  ctx.textAlign = 'center';
+
+  // eyebrow
+  ctx.fillStyle = '#e8c460';
+  ctx.font = '600 30px Georgia';
+  ctx.fillText('T H E   C O N S T I T U T I O N A L   Q U E S T', W/2, 150);
+
+  // emoji
+  ctx.font = '150px serif';
+  ctx.fillText(emoji, W/2, 330);
+
+  // title
+  ctx.fillStyle = '#f5ecd5';
+  ctx.font = 'bold 64px Georgia';
+  wrapLines(ctx, title, W-200).forEach((l, i) => ctx.fillText(l, W/2, 430 + i*72));
+
+  // quote (italic, wrapped)
+  ctx.fillStyle = 'rgba(245,236,213,0.92)';
+  ctx.font = 'italic 44px Georgia';
+  const qLines = wrapLines(ctx, quote, W-220);
+  const qStart = 620 - (qLines.length-1)*28;
+  qLines.forEach((l, i) => ctx.fillText(l, W/2, qStart + i*60));
+
+  // reference
+  ctx.fillStyle = '#e8c460';
+  ctx.font = '600 36px Georgia';
+  ctx.fillText(ref, W/2, qStart + qLines.length*60 + 40);
+
+  // footer + URL
+  ctx.fillStyle = 'rgba(232,196,96,0.85)';
+  ctx.font = '600 34px Georgia';
+  ctx.fillText(footer || 'Play & learn:', W/2, H-150);
+  ctx.fillStyle = '#f5ecd5';
+  ctx.font = 'bold 40px Georgia';
+  ctx.fillText('constitutional-quest-lds.netlify.app', W/2, H-100);
+
+  return new Promise(res => cv.toBlob(res, 'image/png'));
+}
+
+// Share an image card: native share sheet w/ file on phones, download fallback.
+async function shareCard(card, fallbackText, btn) {
+  flashBtn(btn, '🖼️ Making card…');
+  let blob;
+  try { blob = await makeShareCard(card); } catch (e) { blob = null; }
+  const file = blob ? new File([blob], 'constitutional-quest.png', { type: 'image/png' }) : null;
+
+  // Try native share with the image
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: 'The Constitutional Quest', text: `${fallbackText}\n${SHARE_URL}` });
+      flashBtn(btn, '✓ Shared!'); return;
+    } catch (e) { if (e.name === 'AbortError') { flashBtn(btn, '↗ Share this'); return; } }
+  }
+  // Fallback: download the image + copy the text
+  if (blob) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'constitutional-quest.png';
+    a.click(); URL.revokeObjectURL(a.href);
+    try { await navigator.clipboard.writeText(`${fallbackText}\n${SHARE_URL}`); } catch (e) {}
+    flashBtn(btn, '✓ Image saved!');
+  } else {
+    try { await navigator.clipboard.writeText(`${fallbackText}\n${SHARE_URL}`); flashBtn(btn, '✓ Copied!'); }
+    catch (e) { flashBtn(btn, '↗ Share this'); }
+  }
+}
+
+// Share the current gem's truth as an image card.
 function shareGem(btn) {
   const d = GEMS.find(g => g.id === currentGemId);
   if (!d) return;
-  const line = d.scripture ? `“${d.scripture.text}” — ${d.scripture.ref}` : d.title;
-  shareText(`${d.title}: ${line}`, btn);
+  shareCard({
+    emoji: d.emoji || LEVELS[level].art,
+    title: d.title,
+    quote: d.scripture ? d.scripture.text : (d.constQuote || ''),
+    ref: d.scripture ? d.scripture.ref : '',
+    footer: 'A truth from:'
+  }, `${d.title} — ${d.scripture ? d.scripture.ref : ''}`, btn);
 }
-// Share the victory.
+
+// Share the victory as an image card.
 function shareWin(btn) {
   const names = players.map(p => p.name).join(', ');
-  shareText(`${names} completed The Constitutional Quest! 🇺🇸💎 We learned how God protected freedom so families can be together forever.`, btn);
+  shareCard({
+    emoji: '🏛️',
+    title: 'We Completed the Quest!',
+    quote: 'God protected freedom so families can be sealed together forever.',
+    ref: `— ${names}`,
+    footer: 'Play the quest:'
+  }, `${names} completed The Constitutional Quest! 🇺🇸💎`, btn);
 }
 
 // Pass the turn to the next player (wraps around).
