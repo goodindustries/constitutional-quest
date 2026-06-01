@@ -9,7 +9,7 @@
   "keywords": ["lds", "fhe", "constitution", "declaration-of-independence", "religious-freedom", "education", "game"],
   "author": "Reif Tauati <reif@thegoodproject.net> (https://thegoodproject.net)",
   "license": "MIT",
-  "homepage": "https://constitutional-quest.netlify.app",
+  "homepage": "https://gems-of-the-constitution.netlify.app",
   "repository": { "type": "git", "url": "https://github.com/goodindustries/constitutional-quest.git" },
   "type": "commonjs",
   "dependencies": {

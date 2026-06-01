@@ -9,14 +9,14 @@
 <meta property="og:title" content="Hidden Gems of the Constitution">
 <meta property="og:description" content="A 3-quest treasure hunt for FHE: the Founding, the Restoration, and the Covenant. Discover how God protected freedom so families can be together forever.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://constitutional-quest.netlify.app">
-<meta property="og:image" content="https://constitutional-quest.netlify.app/og.png">
+<meta property="og:url" content="https://gems-of-the-constitution.netlify.app">
+<meta property="og:image" content="https://gems-of-the-constitution.netlify.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hidden Gems of the Constitution">
 <meta name="twitter:description" content="A 3-quest treasure hunt for FHE — discover how God protected freedom so families can be together forever.">
-<meta name="twitter:image" content="https://constitutional-quest.netlify.app/og.png">
+<meta name="twitter:image" content="https://gems-of-the-constitution.netlify.app/og.png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -1605,7 +1605,7 @@ function startPreview() {
 function stopPreview() { clearInterval(pvTimer); }
 
 // ───────────── SHARING (canvas-rendered image card) ─────────────
-const SHARE_URL = 'https://constitutional-quest.netlify.app';
+const SHARE_URL = 'https://gems-of-the-constitution.netlify.app';
 
 // Count a share on the Netlify Function (fire-and-forget) and refresh the badge.
 // No-op when opened from file:// (the API only exists on the deployed site).
@@ -1692,7 +1692,7 @@ function makeShareCard({ emoji, title, quote, ref, footer }) {
   ctx.fillText(footer || 'Play & learn:', W/2, H-150);
   ctx.fillStyle = '#f5ecd5';
   ctx.font = 'bold 40px Georgia';
-  ctx.fillText('constitutional-quest.netlify.app', W/2, H-100);
+  ctx.fillText('gems-of-the-constitution.netlify.app', W/2, H-100);
 
   return new Promise(res => cv.toBlob(res, 'image/png'));
 }
