@@ -3,6 +3,14 @@
 //   POST /api/shares  → { count } and increments  (count a share)
 import { getStore } from '@netlify/blobs';
 
+const KEY = 'shareCount';
+
+function json(obj) {
+  return new Response(JSON.stringify(obj), {
+    headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' }
+  });
+}
+
 export default async (req) => {
   // Manual CLI deploys don't auto-inject the Blobs context, so pass it explicitly.
   const store = getStore({
@@ -10,18 +18,17 @@ export default async (req) => {
     siteID: process.env.BLOB_SITE_ID,
     token: process.env.BLOB_TOKEN
   });
-  const KEY = 'shareCount';
-
-  let count = Number(await store.get(KEY)) || 0;
 
   if (req.method === 'POST') {
-    count += 1;
-    await store.set(KEY, String(count));
+    // strongly-consistent read so concurrent increments don't clobber each other
+    const cur = Number(await store.get(KEY, { consistency: 'strong' })) || 0;
+    const next = cur + 1;
+    await store.set(KEY, String(next));
+    return json({ count: next });
   }
 
-  return new Response(JSON.stringify({ count }), {
-    headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' }
-  });
+  const count = Number(await store.get(KEY, { consistency: 'strong' })) || 0;
+  return json({ count });
 };
 
 export const config = { path: '/api/shares' };
