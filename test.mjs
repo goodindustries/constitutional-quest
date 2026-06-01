@@ -20,7 +20,7 @@ await page.goto(URL, { waitUntil: 'networkidle0' });
 // ── TITLE: preview carousel ──
 check(await page.$('#preview-card'), 'title preview carousel present');
 const pv1 = await page.$eval('#preview-card', e => e.textContent);
-await wait(3400);
+await wait(6300);
 const pv2 = await page.$eval('#preview-card', e => e.textContent);
 check(pv1 !== pv2, 'preview carousel rotates quotes');
 
@@ -128,6 +128,37 @@ await page.evaluate(()=>restart()); await wait(300);
 check(await page.$eval('#char-screen', e => e.style.display !== 'none'), 'Play Again → setup screen');
 
 check(errors.length === 0, 'no JS/console errors' + (errors.length ? ': ' + errors.join(' | ') : ''));
+
+// ── MOBILE: panel must not be covered by the overlay backdrop (iOS stacking bug) ──
+const mob = await browser.newPage();
+await mob.setViewport({ width: 390, height: 780, isMobile: true, hasTouch: true });
+await mob.goto(URL, { waitUntil: 'networkidle0' });
+await mob.evaluate(() => { setCount(1); startQuest(); endTour(); });
+await wait(300);
+// Start button reachable with 4 players (scrollable start screen)
+await mob.evaluate(() => restart());
+await mob.evaluate(() => setCount(4)); await wait(150);
+const startReachable = await mob.evaluate(() => {
+  const btn = document.getElementById('start-btn'); btn.scrollIntoView();
+  const r = btn.getBoundingClientRect();
+  return r.top >= 0 && r.top < window.innerHeight && btn.style.display !== 'none';
+});
+check(startReachable, 'mobile: Start button reachable with 4 players');
+await mob.evaluate(() => { startQuest(); endTour(); }); await wait(250);
+await mob.evaluate(() => openCard(document.querySelector('[data-id="g8"]'))); await wait(400);
+// the element at the panel's content must be the panel, NOT the overlay
+const topEl = await mob.evaluate(() => {
+  const panel = document.getElementById('side-panel');
+  const r = panel.getBoundingClientRect();
+  const t = document.elementFromPoint(r.x + r.width/2, r.y + 120);
+  return t ? (t.closest('#side-panel') ? 'panel' : (t.id || t.className)) : 'none';
+});
+check(topEl === 'panel', `mobile: answer panel is on top, not greyed out (got "${topEl}")`);
+// and a choice is actually tappable through to unlock
+await mob.evaluate(() => [...document.querySelectorAll('.q-choice')].find(e => e.dataset.ok === '1').click());
+await wait(150);
+check(await mob.evaluate(() => document.getElementById('slot-g8')?.classList.contains('unlocked')), 'mobile: can tap an answer through the panel');
+await mob.close();
 
 // ── CHEAT CODE: #level2 jumps straight to Quest 2 ──
 const cheatPage = await browser.newPage();

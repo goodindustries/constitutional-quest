@@ -38,8 +38,21 @@ html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nuni
 #char-screen {
   position:fixed; inset:0; z-index:2000;
   background: radial-gradient(ellipse at 30% 40%, #0d1a2e 0%, #08050f 70%);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:2rem;
+  display:flex; align-items:center; justify-content:center;
+  padding:1.5rem; overflow-y:auto;   /* scrollable so Start is always reachable */
+}
+.cs-split{
+  display:flex; gap:2.5rem; align-items:center; justify-content:center;
+  width:100%; max-width:920px; margin:auto;
+}
+.cs-hero{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center;}
+.cs-setup{flex:0 0 360px; max-width:360px; display:flex; flex-direction:column; align-items:center;}
+/* phone: stack into one scrollable column */
+@media(max-width:760px){
+  #char-screen{align-items:flex-start;}
+  .cs-split{flex-direction:column; gap:1.4rem; padding:1rem 0 2rem;}
+  .cs-hero,.cs-setup{flex:none; width:100%; max-width:420px;}
+  .cs-gems{margin-bottom:1rem;}
 }
 .cs-eyebrow { font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold2); margin-bottom:0.3rem; text-align:center; }
 .cs-title { font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:#f5ecd5; text-align:center; margin-bottom:0.2rem; letter-spacing:0.05em; }
@@ -603,34 +616,40 @@ header {
 </head>
 <body>
 
-<!-- ═══ PLAYER SETUP ═══ -->
+<!-- ═══ PLAYER SETUP (split: hero / setup) ═══ -->
 <div id="char-screen">
-  <div class="cs-eyebrow">The Constitutional Quest</div>
-  <div class="cs-title">The Constitutional Quest</div>
-  <div class="cs-sub">Hidden in the Declaration &amp; the Constitution — take turns and find them together!</div>
-  <div class="cs-gems">
-    <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
-    <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+ <div class="cs-split">
+
+  <!-- LEFT: hero + preview carousel -->
+  <div class="cs-hero">
+    <div class="cs-eyebrow">The Constitutional Quest</div>
+    <div class="cs-title">The Constitutional Quest</div>
+    <div class="cs-sub">Hidden in the Declaration &amp; the Constitution — take turns and find them together!</div>
+    <div class="cs-gems">
+      <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+      <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+    </div>
+    <div class="preview" id="preview">
+      <div class="preview-label">✦ What you'll discover ✦</div>
+      <div class="preview-card" id="preview-card"></div>
+      <div class="preview-dots" id="preview-dots"></div>
+    </div>
   </div>
 
-  <!-- preview carousel: a taste of what's coming -->
-  <div class="preview" id="preview">
-    <div class="preview-label">✦ What you'll discover ✦</div>
-    <div class="preview-card" id="preview-card"></div>
-    <div class="preview-dots" id="preview-dots"></div>
+  <!-- RIGHT: player setup -->
+  <div class="cs-setup">
+    <div class="setup-q">How many players?</div>
+    <div class="count-row" id="count-row">
+      <button class="count-btn" onclick="setCount(1)">1</button>
+      <button class="count-btn" onclick="setCount(2)">2</button>
+      <button class="count-btn" onclick="setCount(3)">3</button>
+      <button class="count-btn" onclick="setCount(4)">4</button>
+    </div>
+    <div id="player-rows"></div>
+    <button id="start-btn" class="cs-btn" style="display:none;background:var(--gold);color:var(--blue);margin-top:1.6rem;padding:0.7rem 2rem;font-size:0.95rem;" onclick="startQuest()">Start the Quest ✦</button>
   </div>
 
-  <div class="setup-q">How many players?</div>
-  <div class="count-row" id="count-row">
-    <button class="count-btn" onclick="setCount(1)">1</button>
-    <button class="count-btn" onclick="setCount(2)">2</button>
-    <button class="count-btn" onclick="setCount(3)">3</button>
-    <button class="count-btn" onclick="setCount(4)">4</button>
-  </div>
-
-  <div id="player-rows"></div>
-
-  <button id="start-btn" class="cs-btn" style="display:none;background:var(--gold);color:var(--blue);margin-top:1.6rem;padding:0.65rem 2rem;font-size:0.9rem;" onclick="startQuest()">Start the Quest ✦</button>
+ </div>
 </div>
 
 <!-- ═══ MAIN APP ═══ -->
@@ -805,6 +824,10 @@ header {
     </div>
   </aside>
 
+  <!-- backdrop lives INSIDE .split so it shares the panel's stacking context
+       (fixes iOS: a body-level overlay was painting over the panel) -->
+  <div class="overlay" id="overlay" onclick="closeCard()"></div>
+
 </div><!-- /split -->
 
 <div class="hint">
@@ -933,8 +956,6 @@ header {
     </div>
   </div>
 </div>
-
-<div class="overlay" id="overlay" onclick="closeCard()"></div>
 
 <!-- ═══ HOW-TO-PLAY TOUR ═══ -->
 <div class="tour" id="tour">
@@ -1552,7 +1573,7 @@ function renderPreview() {
 function startPreview() {
   renderPreview();
   clearInterval(pvTimer);
-  pvTimer = setInterval(() => { pvIdx = (pvIdx + 1) % PREVIEW.length; renderPreview(); }, 3200);
+  pvTimer = setInterval(() => { pvIdx = (pvIdx + 1) % PREVIEW.length; renderPreview(); }, 6000);
 }
 function stopPreview() { clearInterval(pvTimer); }
 
