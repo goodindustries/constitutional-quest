@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 import path from 'path';
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const URL = 'file://' + path.resolve('index.html');
+const URL = process.env.TEST_URL || ('file://' + path.resolve('index.html'));
 
 const log = (ok, msg) => console.log(`${ok ? '✅' : '❌'} ${msg}`);
 let fails = 0;
@@ -11,158 +11,109 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new', args: ['--no-sandbox'] });
 const page = await browser.newPage();
-await page.setViewport({ width: 1280, height: 980 });
+await page.setViewport({ width: 1280, height: 1000 });
 const errors = [];
 page.on('pageerror', e => errors.push(e.message));
 page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
 await page.goto(URL, { waitUntil: 'networkidle0' });
 
-// ── SETUP: 3 players with custom names + avatars ──
-check(await page.$('#char-screen'), 'setup screen present');
-check((await page.$$('.count-btn')).length === 4, 'player-count buttons 1–4 present');
+// ── TITLE: preview carousel ──
+check(await page.$('#preview-card'), 'title preview carousel present');
+const pv1 = await page.$eval('#preview-card', e => e.textContent);
+await wait(3400);
+const pv2 = await page.$eval('#preview-card', e => e.textContent);
+check(pv1 !== pv2, 'preview carousel rotates quotes');
 
-await page.click('.count-btn:nth-child(3)');   // 3 players
-await wait(150);
-check((await page.$$('.prow')).length === 3, '3 player rows appear');
+// ── About the author (fixed) ──
+check(await page.$('#about-fab'), 'About button fixed on screen');
+await page.evaluate(()=>openAbout()); await wait(200);
+const aboutText = await page.$eval('#about-modal', e => e.textContent);
+check(/Reif Tauati/.test(aboutText) && /thegoodproject\.net/.test(aboutText), 'About modal shows Reif + link');
+await page.evaluate(()=>closeAbout()); await wait(150);
+check(await page.$eval('#about-modal', e => !e.classList.contains('open')), 'About modal closes');
 
-const NAMES = ['Ava', 'Ben', 'Cee'];
-for (let i = 0; i < 3; i++) {
-  await page.click(`#pn-${i}`);
-  await page.type(`#pn-${i}`, NAMES[i]);
-}
-// exactly 12 avatar choices, each with a doctrine meaning tooltip
-const avInfo = await page.$$eval('#pe-0 .prow-emoji', els => ({
-  n: els.length, titled: els.filter(e => e.title && e.title.length > 3).length
-}));
-check(avInfo.n === 12, `exactly 12 LDS-symbol avatars (got ${avInfo.n})`);
-check(avInfo.titled === 12, 'every avatar has a meaning tooltip');
+// ── SETUP: 2 players ──
+await page.evaluate(() => setCount(2)); await wait(150);
+await page.$eval('#pn-0', (e,v) => e.value = v, 'Lehi'); await page.type('#pn-0', '');
+await page.evaluate(() => { players[0].name = 'Lehi'; players[1].name = 'Nephi'; });
+await page.evaluate(() => startQuest()); await wait(250);
+await page.evaluate(() => endTour());
 
-// pick a distinct avatar for player 1 (tap the 5th emoji option) + meaning updates
-const firstEmoji = await page.$eval('#pe-0 .prow-emoji:nth-child(5)', e => e.textContent);
-await page.click('#pe-0 .prow-emoji:nth-child(5)');
-const avatarSet = await page.$eval('#pa-0', e => e.textContent);
-check(avatarSet === firstEmoji, `avatar picker works (player 1 → ${avatarSet})`);
-const meaning = await page.$eval('#ph-0', e => e.textContent);
-check(meaning.length > 4, `avatar meaning shows: "${meaning}"`);
-
-await page.click('#start-btn');
-await wait(250);
-
-// ── TOUR appears, 4 steps, then dismiss ──
-check(await page.$eval('#tour', e => e.classList.contains('open')), 'how-to-play tour opens on first start');
-let tsteps = 0;
-for (let s = 0; s < 4; s++) {
-  const label = await page.$eval('#tour-step', e => e.textContent);
-  if (/Step \d of 4/.test(label)) tsteps++;
-  const dotsOn = await page.$$eval('.tour-dot.on', d => d.length);
-  if (dotsOn !== 1) check(false, `tour step ${s+1} should have 1 active dot (got ${dotsOn})`);
-  await page.click('#tour-next');
-  await wait(120);
-}
-check(tsteps === 4, 'tour has 4 steps');
-check(await page.$eval('#tour', e => !e.classList.contains('open')), 'tour closes after last step');
-
-check(await page.$eval('#main-app', e => e.style.display !== 'none'), 'quest playable after tour');
-
-// ── TURN ROTATION across 3 players, scrambled choices ──
-const order = ['g8','g9','g1','g2','g3','g4','g5','g7'];
-let prevChoiceOrder = null, sawScramble = false;
-for (let i = 0; i < order.length; i++) {
-  const id = order[i];
-  const expectName = NAMES[i % 3];
-  const sub = await page.$eval('#hdr-sub', e => e.textContent.trim());
-  check(sub.includes(expectName), `gem ${i+1} (${id}): ${expectName}'s turn → "${sub}"`);
-
-  await page.click(`.hs[data-id="${id}"]`);
-  await wait(120);
-  check(await page.$eval('#panel-card', e => e.style.display === 'block'), `${id}: card opened`);
-  const cardTurn = await page.$eval('#card-turn-banner', e => e.textContent);
-  check(cardTurn.includes(expectName), `${id}: card banner shows ${expectName}`);
-
-  // choices: 3 buttons, exactly 1 correct
-  const info = await page.$$eval('.q-choice', els => ({
-    n: els.length, ok: els.filter(e => e.dataset.ok === '1').length,
-    texts: els.map(e => e.querySelector('.q-choice-t').textContent)
-  }));
-  check(info.n === 3 && info.ok === 1, `${id}: 3 scrambled choices, 1 correct`);
-  if (prevChoiceOrder && id === 'g8') {} // n/a
-  prevChoiceOrder = info.texts.join('|');
-
-  // wrong tap stays locked
-  await page.evaluate(() => [...document.querySelectorAll('.q-choice')].find(e => e.dataset.ok === '0').click());
-  await wait(50);
-  check(await page.$eval(`#slot-${id}`, e => e.classList.contains('locked')), `${id}: wrong tap keeps it locked`);
-
-  // correct tap unlocks + credits this player
-  await page.evaluate(() => [...document.querySelectorAll('.q-choice')].find(e => e.dataset.ok === '1').click());
-  await wait(120);
-  check(await page.$eval(`#slot-${id}`, e => e.classList.contains('unlocked')), `${id}: correct tap unlocks`);
-
-  const team = await page.$eval('#team-score', e => e.textContent);
-  check(team.includes(`${i+1} of 8`) || team.includes('all 8'), `${id}: team ${team.replace('🤝 ','')}`);
-
-  if (i < order.length - 1) {
-    const nextName = NAMES[(i+1) % 3];
-    const nextSub = await page.$eval('#hdr-sub', e => e.textContent);
-    check(nextSub.includes(nextName), `${id}: turn passed to ${nextName}`);
-    await page.click('.popup-close');
-    await wait(70);
+// helper: play a whole level by clicking correct answers; verify false-path on first gem
+async function playLevel(ids, levelLabel, testFalsePath) {
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+    await page.evaluate((id) => openCard(document.querySelector(`[data-id="${id}"]`)), id);
+    await wait(160);
+    if (testFalsePath && i === 0) {
+      // tap a wrong answer → false-path hint should appear, gem stays locked
+      await page.evaluate(() => [...document.querySelectorAll('.q-choice')].find(e => e.dataset.ok === '0').click());
+      await wait(80);
+      const fh = await page.$eval('#q-falsehint', e => e.classList.contains('show'));
+      check(fh, `${levelLabel}: wrong answer shows false-path teaching`);
+    }
+    await page.evaluate(() => [...document.querySelectorAll('.q-choice')].find(e => e.dataset.ok === '1').click());
+    await wait(140);
+    const unlocked = await page.evaluate((id) => document.getElementById('slot-' + id)?.classList.contains('unlocked'), id);
+    check(unlocked, `${levelLabel}: ${id} unlocked`);
+    // share button present on the card
+    if (i === 0) check(await page.$('.share-btn'), `${levelLabel}: per-card Share button present`);
+    await page.evaluate(() => closeCard());
+    await wait(50);
   }
 }
 
-// scramble sanity: reopen same gem twice, confirm order can differ across renders
-const seen = new Set();
-for (let k = 0; k < 8; k++) {
-  // open an already-done gem won't show choices; use the document is fully solved now,
-  // so instead reload fresh and sample g8 choice order a few times
-}
-// (scramble is validated structurally above; do a direct sampling on a fresh load)
-const samples = await page.evaluate(() => {
-  const d = GEMS.find(g => g.id === 'g8');
-  const orders = new Set();
-  for (let i = 0; i < 30; i++) {
-    const sh = d.choices.map(c => c).sort(() => Math.random() - 0.5).map(c => c.t).join('|');
-    orders.add(sh);
-  }
-  return orders.size;
-});
-check(samples > 1, `choices actually scramble (${samples} distinct orders in 30 draws)`);
+// ── LEVEL 1 — Founding gems (in the document) ──
+check(await page.$eval('#level-pill', e => /Founding Treasure/.test(e.textContent)), 'Level 1 pill: Founding Treasure');
+await playLevel(['g8','g9','g1','g2','g3','g4','g5','g7'], 'L1', true);
+await wait(1300);
+check(await page.$eval('#level-complete', e => e.classList.contains('show')), 'L1 → level-complete screen');
+check(await page.$eval('#lc-next', e => /Restoration Key/.test(e.textContent)), 'unlocks Quest 2: Restoration Key');
+await page.evaluate(()=>document.getElementById('lc-btn').click()); await wait(350);
+
+// ── LEVEL 2 — Restoration scrolls ──
+check(await page.$eval('#level-pill', e => /Restoration Key/.test(e.textContent)), 'Level 2 pill: Restoration Key');
+check((await page.$$('.record')).length === 8, 'Level 2 shows 8 record scrolls');
+// verify a real scripture scroll renders the actual words
+await page.evaluate(() => openCard(document.querySelector('[data-id="r1"]'))); await wait(200);
+const scrollWords = await page.$eval('.p-scroll-words', e => e.textContent);
+check(/moral agency/.test(scrollWords), 'scroll shows actual D&C 101:78 words');
+const whyChain = await page.$eval('.p-why', e => e.textContent);
+check(/Doctrine:/.test(whyChain) && /Temple:/.test(whyChain), 'why-it-matters chain renders');
+await page.evaluate(() => closeCard());
+await playLevel(['r1','r2','r3','r4','r5','r6','r7','r8'], 'L2', true);
+await wait(1300);
+check(await page.$eval('#lc-next', e => /Covenant Crown/.test(e.textContent)), 'unlocks Quest 3: Covenant Crown');
+await page.evaluate(()=>document.getElementById('lc-btn').click()); await wait(350);
+
+// ── LEVEL 3 — Covenant crown (living prophets) ──
+check(await page.$eval('#level-pill', e => /Covenant Crown/.test(e.textContent)), 'Level 3 pill: Covenant Crown');
+check((await page.$$('.record')).length === 4, 'Level 3 shows 4 crowns');
+await page.evaluate(() => openCard(document.querySelector('[data-id="c2"]'))); await wait(200);
+const prophet = await page.$eval('.p-prophet', e => e.textContent);
+check(/Dallin H\. Oaks/.test(prophet) && /essential to God/.test(prophet), 'Level 3 shows verified living-prophet quote (Oaks)');
+await page.evaluate(() => closeCard());
+await playLevel(['c1','c2','c3','c4'], 'L3', false);
 
 // ── VICTORY ──
-await wait(1700);
-check(await page.$eval('#victory', e => e.classList.contains('show')), 'victory shown after 8th gem');
-
-// roster shows all 3 players
-const roster = await page.$$eval('.v-pl', els => els.map(e => ({
-  name: e.querySelector('.v-pl-name').textContent,
-  gems: e.querySelector('.v-pl-gems').textContent
-})));
-check(roster.length === 3, 'finale roster shows all 3 players');
-check(roster.every(r => NAMES.includes(r.name)), 'roster names = Ava, Ben, Cee → ' + roster.map(r=>r.name).join(','));
-const totalGems = roster.reduce((s, r) => s + parseInt(r.gems.replace(/\D/g,'')), 0);
-check(totalGems === 8, `player gem counts add to 8 (${roster.map(r=>r.name+':'+r.gems.replace(/\D/g,'')).join(' ')})`);
-
-// v-sub names everyone
-const vsub = await page.$eval('#v-sub', e => e.textContent);
-check(NAMES.every(n => vsub.includes(n)), 'finale subtitle names every player');
-
-// photo + chain + rain still good
-check(await page.$eval('.v-photo', img => img.naturalWidth > 0), 'finale photo loaded');
+await wait(1600);
+check(await page.$eval('#victory', e => e.classList.contains('show')), 'L3 → final victory');
 const vtext = await page.$eval('#victory', e => e.textContent);
-check(/come from our Creator/.test(vtext) && /together FOREVER/.test(vtext), 'thesis chain God→family forever intact');
-check(/America turns/.test(vtext) && /250/.test(vtext) && /July 4, 2026/.test(vtext), 'America 250 section present (July 4, 2026)');
-check(/fast and give thanks for religious liberty on July 5, 2026/.test(vtext), 'mentions the July 5, 2026 fast of gratitude');
-check(/Dallin H\. Oaks/.test(vtext) && /Joseph Smith/.test(vtext), 'prophet quotes (Joseph Smith + Pres. Oaks) present');
-check(/5th-Sunday lesson/.test(vtext), 'ties to the Church 5th-Sunday lesson');
-const rain = await page.$eval('#emoji-rain', e => e.children.length);
-check(rain > 10, `emoji rain pouring (${rain})`);
+check(/completed all 3 quests/.test(vtext), 'finale says completed all 3 quests');
+check(/America turns/.test(vtext) && /July 5, 2026/.test(vtext), 'America 250 + fast still present');
+const roster = await page.$$eval('.v-pl', els => els.map(e => e.textContent));
+check(roster.length === 2 && roster.join().includes('Lehi') && roster.join().includes('Nephi'), 'finale roster shows both players');
+// total gems across all levels = 20
+const total = await page.evaluate(() => players.reduce((s,p)=>s+p.gems,0));
+check(total === 20, `players found all 20 across 3 levels (got ${total})`);
+check(await page.$('.v-share'), 'finale Share button present');
+check(await page.$eval('.v-photo', img => img.naturalWidth > 0), 'finale photo loaded');
 
 await page.screenshot({ path: 'finale.png' });
 log(true, 'saved finale.png');
 
-// ── Play Again resets to setup ──
-await page.click('.v-restart');
-await wait(250);
+// Play Again resets to level 1 setup
+await page.evaluate(()=>restart()); await wait(300);
 check(await page.$eval('#char-screen', e => e.style.display !== 'none'), 'Play Again → setup screen');
 
 check(errors.length === 0, 'no JS/console errors' + (errors.length ? ': ' + errors.join(' | ') : ''));

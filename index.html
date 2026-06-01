@@ -60,6 +60,20 @@ html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nuni
 }
 .cs-btn:hover{opacity:0.88;transform:scale(1.04)}
 
+/* ── TITLE PREVIEW CAROUSEL ── */
+.preview{width:min(460px,92vw);margin-bottom:1.6rem;text-align:center;}
+.preview-label{font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(232,196,96,0.6);margin-bottom:0.5rem;}
+.preview-card{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.35rem;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(200,151,30,0.3);border-radius:14px;padding:1rem 1.1rem;}
+.preview-card.fade{animation:pvFade 0.5s ease;}
+@keyframes pvFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pv-emoji{font-size:1.7rem;}
+.pv-quote{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;line-height:1.5;color:#f5ecd5;}
+.pv-ref{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold2);}
+.preview-dots{display:flex;gap:0.35rem;justify-content:center;margin-top:0.6rem;}
+.preview-dots .pd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);transition:background 0.2s;}
+.preview-dots .pd.on{background:var(--gold2);}
+
 /* ── PLAYER SETUP ── */
 .setup-q{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold2);margin-bottom:0.7rem;letter-spacing:0.04em;}
 .count-row{display:flex;gap:0.7rem;justify-content:center;margin-bottom:1.6rem;}
@@ -543,6 +557,48 @@ header {
 .lc-next b{color:#fff;}
 .lc-btn{background:var(--gold);color:var(--blue);border:none;border-radius:30px;padding:0.7rem 2rem;font-family:'Cinzel',serif;font-size:0.92rem;font-weight:700;letter-spacing:0.05em;cursor:pointer;transition:transform 0.15s;}
 .lc-btn:hover{transform:scale(1.05);}
+
+/* ── ABOUT THE AUTHOR (fixed bottom-right) ── */
+.about-fab{position:fixed;bottom:12px;right:12px;z-index:1500;
+  background:rgba(26,46,80,0.92);border:1px solid var(--gold);color:var(--gold2);
+  border-radius:24px;padding:0.4rem 0.8rem;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;gap:0.35rem;box-shadow:0 4px 14px rgba(0,0,0,0.4);transition:transform 0.15s,background 0.15s;}
+.about-fab:hover{transform:translateY(-2px);background:rgba(26,46,80,1);}
+.about-modal{display:none;position:fixed;inset:0;z-index:5500;background:rgba(6,4,12,0.8);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.2rem;}
+.about-modal.open{display:flex;}
+.about-card{position:relative;width:min(440px,94vw);max-height:88vh;overflow-y:auto;background:linear-gradient(160deg,#fdf8ed,#f0e6cf);border:2px solid var(--gold);border-radius:18px;padding:1.8rem 1.6rem;box-shadow:0 24px 70px rgba(0,0,0,0.7);animation:tourPop 0.35s cubic-bezier(.2,1.3,.4,1);}
+.about-close{position:absolute;top:0.7rem;right:0.8rem;background:rgba(30,18,6,0.5);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;}
+.about-emoji{font-size:2.6rem;text-align:center;margin-bottom:0.2rem;}
+.about-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--blue);text-align:center;margin-bottom:0.9rem;}
+.about-text{font-family:'Lora',serif;font-size:0.92rem;line-height:1.65;color:var(--ink);}
+.about-text p{margin-bottom:0.7rem;}
+.about-text a{color:var(--red);font-weight:600;}
+.about-sign{font-family:'Cinzel',serif;font-style:normal;color:var(--blue);font-weight:700;}
+
+/* ── SHARE BUTTONS ── */
+.share-btn{margin-top:0.7rem;width:100%;background:rgba(26,46,80,0.08);border:1.5px solid var(--pb);color:var(--pc);border-radius:8px;padding:0.5rem;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;cursor:pointer;transition:background 0.15s;}
+.share-btn:hover{background:rgba(26,46,80,0.14);}
+.v-share{margin-top:0.4rem;padding:0.55rem 1.4rem;border-radius:30px;background:rgba(255,255,255,0.1);border:1.5px solid var(--gold2);color:var(--gold2);font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;transition:background 0.15s;}
+.v-share:hover{background:rgba(255,255,255,0.18);}
+
+/* ── RESPONSIVE: phones / small screens ── */
+@media(max-width:760px){
+  header{height:auto;flex-wrap:wrap;padding:0.4rem 0.6rem;gap:0.3rem;}
+  .hdr-turn{font-size:0.9rem;}
+  .gem-center{order:3;flex:1 0 100%;}
+  .team-score{font-size:0.5rem;}
+  .level-pill{font-size:0.5rem;}
+  .scroll-area{top:auto;}
+  .document{padding:1.6rem 1.1rem;width:100%;}
+  .doc-main{font-size:1.9rem;}
+  .about-fab span{display:none;}
+  .about-fab{padding:0.5rem 0.6rem;font-size:0.9rem;}
+}
+@media(max-width:420px){
+  .count-btn{width:46px;height:46px;font-size:1.2rem;}
+  .cs-title{font-size:1.6rem;}
+  .prow-emoji{width:24px;height:24px;}
+}
 </style>
 </head>
 <body>
@@ -550,11 +606,18 @@ header {
 <!-- ═══ PLAYER SETUP ═══ -->
 <div id="char-screen">
   <div class="cs-eyebrow">The Constitutional Quest</div>
-  <div class="cs-title">Find the 8 Gems!</div>
+  <div class="cs-title">The Constitutional Quest</div>
   <div class="cs-sub">Hidden in the Declaration &amp; the Constitution — take turns and find them together!</div>
   <div class="cs-gems">
     <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
     <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+  </div>
+
+  <!-- preview carousel: a taste of what's coming -->
+  <div class="preview" id="preview">
+    <div class="preview-label">✦ What you'll discover ✦</div>
+    <div class="preview-card" id="preview-card"></div>
+    <div class="preview-dots" id="preview-dots"></div>
   </div>
 
   <div class="setup-q">How many players?</div>
@@ -836,6 +899,7 @@ header {
     <p>That law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind, and is justifiable before me.</p>
   </div>
 
+  <button class="v-share" onclick="shareWin(this)">↗ Share our victory</button>
   <button class="v-restart" onclick="restart()">Play Again ✦</button>
  </div>
 </div>
@@ -848,6 +912,24 @@ header {
     <div class="lc-sub" id="lc-sub"></div>
     <div class="lc-next" id="lc-next"></div>
     <button class="lc-btn" id="lc-btn">Begin Quest 2</button>
+  </div>
+</div>
+
+<!-- About the author (fixed bottom-right) -->
+<button class="about-fab" id="about-fab" onclick="openAbout()" title="About the author">ⓘ <span>About</span></button>
+<div class="about-modal" id="about-modal" onclick="if(event.target===this)closeAbout()">
+  <div class="about-card">
+    <button class="about-close" onclick="closeAbout()">✕</button>
+    <div class="about-emoji">👋</div>
+    <div class="about-title">About the Author</div>
+    <div class="about-text">
+      <p>Hi, I'm <b>Reif Tauati</b>. This game is a fun little project I built to teach my kids during FHE — aligned with the First Presidency's guidance to give “instruction about the significance of the Declaration of Independence, the Constitution, and related events that enabled the Restoration of the Church.”</p>
+      <p>I barely understand the lingo of these documents, so imagine trying to teach it to kids!! This game is the result of my assignment to ‘give the lesson’ at our weekly FHE. I got by with a little help from my friend Claude. 🙂</p>
+      <p>My main work is here: <a href="https://thegoodproject.net" target="_blank" rel="noopener">thegoodproject.net</a><br>
+         Reach me: <a href="mailto:reif@thegoodproject.net">reif@thegoodproject.net</a></p>
+      <p>I hope this brings some laughter, some joy, and a greater appreciation for the Lord's hand in all of this.</p>
+      <p class="about-sign">— Brother Reif</p>
+    </div>
   </div>
 </div>
 
@@ -897,6 +979,7 @@ const L1_GEMS = [
     choices:[ {e:"🙏", t:"Creator (God)", ok:true}, {e:"👑", t:"a king"}, {e:"🏛️", t:"the government"} ],
     answers:["creator","Creator","god","God"],
     hint:"It starts with 'C' — it means God, the one who made us.",
+    falsehint:"If government gave our rights, government could take them away. The Declaration says rights come from the <b>Creator</b>.",
     scripture:{ ref:"D&C 101:78", text:"That every man may act...according to the moral agency which I have given unto him, that every man may be accountable for his own sins in the day of judgment." }
   },
   {
@@ -911,6 +994,7 @@ const L1_GEMS = [
     choices:[ {e:"🕊️", t:"Liberty", ok:true}, {e:"🍪", t:"Cookies"}, {e:"📺", t:"TV"} ],
     answers:["liberty","Liberty","freedom","Freedom"],
     hint:"It's the one that means freedom!",
+    falsehint:"God gave us Life, <b>Liberty</b>, and the pursuit of happiness — not cookies or TV!",
     scripture:{ ref:"2 Nephi 2:27", text:"Wherefore, men are free according to the flesh...And they are free to choose liberty and eternal life...or to choose captivity and death." }
   },
   {
@@ -925,6 +1009,7 @@ const L1_GEMS = [
     choices:[ {e:"🙋", t:"the people", ok:true}, {e:"👑", t:"a king"}, {e:"🐉", t:"a dragon"} ],
     answers:["people","People","the people","the People"],
     hint:"The very first three words of the Constitution answer this!",
+    falsehint:"In America the power belongs to <b>the people</b> — that's why it begins 'We the People,' not 'We the King.'",
     scripture:{ ref:"D&C 101:80", text:"And for this purpose have I established the Constitution of this land, by the hands of wise men whom I raised up unto this very purpose." }
   },
   {
@@ -939,6 +1024,7 @@ const L1_GEMS = [
     choices:[ {e:"🕊️", t:"Liberty", ok:true}, {e:"🍬", t:"Candy"}, {e:"😴", t:"Sleep"} ],
     answers:["liberty","Liberty","freedom","Freedom"],
     hint:"It's the word right in the highlighted text — it means freedom!",
+    falsehint:"The Constitution protects the Blessings of <b>Liberty</b> — freedom — for us and our children.",
     scripture:{ ref:"D&C 98:5", text:"And that law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind." }
   },
   {
@@ -953,6 +1039,7 @@ const L1_GEMS = [
     choices:[ {e:"📜", t:"1787", ok:true}, {e:"🎂", t:"2020"}, {e:"🦕", t:"a million B.C."} ],
     answers:["1787"],
     hint:"Look at the top of the document — 'Ordained & Established — Philadelphia, ____'",
+    falsehint:"It was <b>1787</b> — 18 years before Joseph Smith was even born. God prepared the land first.",
     scripture:{ ref:"2 Nephi 1:7", text:"Wherefore, this land is consecrated unto him whom he shall bring. And if it so be that they shall serve him according to the commandments which he hath given, it shall be a land of liberty unto them." }
   },
   {
@@ -967,6 +1054,7 @@ const L1_GEMS = [
     choices:[ {e:"🛡️", t:"defend", ok:true}, {e:"🗑️", t:"throw away"}, {e:"🙈", t:"ignore"} ],
     answers:["defend","Defend"],
     hint:"It's the last word in the oath — to guard and ________ something means to protect it.",
+    falsehint:"Even the President must promise to <b>defend</b> the Constitution — no one is above the law.",
     scripture:{ ref:"D&C 134:1", text:"We believe that governments were instituted of God for the benefit of man; and that he holds men accountable for their acts in relation to them." }
   },
   {
@@ -981,6 +1069,7 @@ const L1_GEMS = [
     choices:[ {e:"👑", t:"supreme (highest)", ok:true}, {e:"🐢", t:"slowest"}, {e:"🤏", t:"smallest"} ],
     answers:["supreme","Supreme"],
     hint:"It's in the highlighted text — it means highest, like the ______ Court.",
+    falsehint:"The Constitution is the <b>supreme</b> (highest) law — above every leader and every other law.",
     scripture:{ ref:"D&C 98:6", text:"That law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind, and is justifiable before me." }
   },
   {
@@ -995,6 +1084,7 @@ const L1_GEMS = [
     choices:[ {e:"1️⃣", t:"The First", ok:true}, {e:"💯", t:"The 100th"}, {e:"❌", t:"None"} ],
     answers:["first","1st","first amendment","the first","the 1st","1"],
     hint:"It's the very first one — the Bill of Rights starts here.",
+    falsehint:"It's the <b>First</b> Amendment — freedom of religion is right at the very top of the Bill of Rights.",
     scripture:{ ref:"11th Article of Faith", text:"We claim the privilege of worshiping Almighty God according to the dictates of our own conscience, and allow all men the same privilege, let them worship how, where, or what they may." }
   }
 ];
@@ -1325,6 +1415,7 @@ function startQuest() {
   }));
   cur = 0;
   applyTheme();
+  stopPreview();
   document.getElementById('char-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   loadLevel(1);
@@ -1383,7 +1474,7 @@ function renderLevelDoc(n) {
 // ───────────── HOW-TO-PLAY TOUR ─────────────
 const TOUR = [
   { emoji:'📜', title:'Two Special Papers', text:'You\'re looking at the <b>Declaration of Independence</b> and the <b>Constitution</b> — the papers that made America free.' },
-  { emoji:'💎', title:'Find the Hidden Gems', text:'See the <b>gold underlined words</b>? Tap one to open a gem. There are <b>8 gems</b> to find!' },
+  { emoji:'💎', title:'Find the Hidden Gems', text:'See the <b>gold underlined words</b>? Tap one to open a gem. Find all <b>8 gems</b> in Quest 1!' },
   { emoji:'👆', title:'Tap the Right Answer', text:'Each gem asks one easy question. Just <b>tap the picture</b> you think is right — no spelling needed!' },
   { emoji:'🤝', title:'Take Turns Together', text:'Players take turns automatically. Work as a <b>team</b>!' },
   { emoji:'🗝️', title:'Three Quests', text:'Quest 1 finds the <b>gems</b>. Beat it to unlock Quest 2 (the <b>scrolls</b>) and Quest 3 (the <b>crown</b>) — each one goes deeper!' }
@@ -1414,6 +1505,66 @@ function tourNext() {
 
 function endTour() {
   document.getElementById('tour').classList.remove('open');
+}
+
+function openAbout() { document.getElementById('about-modal').classList.add('open'); }
+function closeAbout() { document.getElementById('about-modal').classList.remove('open'); }
+
+// ───────────── TITLE PREVIEW CAROUSEL ─────────────
+const PREVIEW = [
+  { e:'🙏', q:'“…endowed by their Creator with certain unalienable Rights”', r:'Declaration of Independence' },
+  { e:'📜', q:'“I established the Constitution of this land…”', r:'Doctrine & Covenants 101:80' },
+  { e:'🌍', q:'“…belongs to all mankind, and is justifiable before me.”', r:'Doctrine & Covenants 98:5' },
+  { e:'🗳️', q:'“…to do your business by the voice of the people.”', r:'Mosiah 29:26' },
+  { e:'🚩', q:'“In memory of our God, our religion, and freedom…”', r:'Alma 46:12 — the Title of Liberty' },
+  { e:'🕊️', q:'“The free exercise of religion is essential to God\'s plan of salvation.”', r:'President Dallin H. Oaks' },
+  { e:'👨‍👩‍👧‍👦', q:'“…sealed to our loved ones for all eternity!”', r:'President Russell M. Nelson' }
+];
+let pvIdx = 0, pvTimer = null;
+function renderPreview() {
+  const c = document.getElementById('preview-card');
+  if (!c) return;
+  const p = PREVIEW[pvIdx];
+  c.classList.remove('fade'); void c.offsetWidth; c.classList.add('fade');
+  c.innerHTML = `<div class="pv-emoji">${p.e}</div><div class="pv-quote">${p.q}</div><div class="pv-ref">${p.r}</div>`;
+  document.getElementById('preview-dots').innerHTML =
+    PREVIEW.map((_, i) => `<div class="pd${i === pvIdx ? ' on' : ''}"></div>`).join('');
+}
+function startPreview() {
+  renderPreview();
+  clearInterval(pvTimer);
+  pvTimer = setInterval(() => { pvIdx = (pvIdx + 1) % PREVIEW.length; renderPreview(); }, 3200);
+}
+function stopPreview() { clearInterval(pvTimer); }
+
+// ───────────── SHARING ─────────────
+const SHARE_URL = 'https://constitutional-quest-lds.netlify.app';
+// Share a bit of text + the game link. Uses the native share sheet on phones,
+// falls back to copying to clipboard on desktop.
+async function shareText(text, btn) {
+  const payload = { title: 'The Constitutional Quest', text, url: SHARE_URL };
+  try {
+    if (navigator.share) { await navigator.share(payload); return; }
+    await navigator.clipboard.writeText(`${text}\n${SHARE_URL}`);
+    flashBtn(btn, '✓ Copied!');
+  } catch (e) { /* user cancelled — ignore */ }
+}
+function flashBtn(btn, msg) {
+  if (!btn) return;
+  const old = btn.innerHTML; btn.innerHTML = msg;
+  setTimeout(() => { btn.innerHTML = old; }, 1600);
+}
+// Share the current gem's truth.
+function shareGem(btn) {
+  const d = GEMS.find(g => g.id === currentGemId);
+  if (!d) return;
+  const line = d.scripture ? `“${d.scripture.text}” — ${d.scripture.ref}` : d.title;
+  shareText(`${d.title}: ${line}`, btn);
+}
+// Share the victory.
+function shareWin(btn) {
+  const names = players.map(p => p.name).join(', ');
+  shareText(`${names} completed The Constitutional Quest! 🇺🇸💎 We learned how God protected freedom so families can be together forever.`, btn);
 }
 
 // Pass the turn to the next player (wraps around).
@@ -1530,6 +1681,7 @@ function openCard(el) {
   }
 
   body += `<div class="p-scripture"><div class="ref">${d.scripture.ref}</div><p>${d.scripture.text}</p></div>`;
+  body += `<button class="share-btn" onclick="shareGem(this)">↗ Share this</button>`;
   document.getElementById('pBody').innerHTML = body;
 
   updateTurnBanners();
@@ -1697,10 +1849,14 @@ function zoom(d) {
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
+  if (document.getElementById('about-modal').classList.contains('open')) { closeAbout(); return; }
   if (document.getElementById('tour').classList.contains('open')) { endTour(); return; }
   if (document.getElementById('lightbox').classList.contains('open')) { closeLightbox(); return; }
   closeCard();
 });
+
+// kick off the title-screen preview carousel
+startPreview();
 </script>
 </body>
 </html>
