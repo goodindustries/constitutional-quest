@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="Hidden Gems of the Constitution">
 <meta name="twitter:description" content="A 3-quest treasure hunt for FHE — discover how God protected freedom so families can be together forever.">
 <meta name="twitter:image" content="https://gems-of-the-constitution.netlify.app/og.png">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -84,21 +84,25 @@ html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nuni
 /* ── TITLE PREVIEW CAROUSEL ── */
 .preview{width:min(460px,92vw);margin-bottom:1.6rem;text-align:center;}
 .preview-label{font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(232,196,96,0.6);margin-bottom:0.5rem;}
-.preview-card{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.35rem;
-  background:rgba(255,255,255,0.04);border:1px solid rgba(200,151,30,0.3);border-radius:14px;padding:1rem 1.1rem;}
-.preview-card.fade{animation:pvFade 0.5s ease;}
-@keyframes pvFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.pv-emoji{font-size:1.7rem;}
-.pv-quote{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;line-height:1.5;color:#f5ecd5;}
-.pv-ref{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;color:var(--gold2);}
+.preview-card{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(200,151,30,0.3);border-radius:14px;padding:1rem 1.3rem;
+  opacity:1;transition:opacity 0.7s ease;}
+.preview-card.fading{opacity:0;}
+.pv-quote{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.55rem;line-height:1.3;color:#f5ecd5;}
+.pv-quote::before{content:'“';}.pv-quote::after{content:'”';}
+.pv-ref{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold2);}
 .preview-dots{display:flex;gap:0.35rem;justify-content:center;margin-top:0.6rem;}
 .preview-dots .pd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);transition:background 0.2s;}
 .preview-dots .pd.on{background:var(--gold2);}
 
 /* ── PLAYER SETUP ── */
 .setup-q{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold2);margin-bottom:0.7rem;letter-spacing:0.04em;}
-.cs-guide{display:inline-block;margin-top:1rem;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:rgba(232,196,96,0.75);text-decoration:none;border-bottom:1px dashed rgba(232,196,96,0.4);padding-bottom:1px;transition:color 0.15s;}
+.cs-guide{display:block;margin-top:0.9rem;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:rgba(232,196,96,0.75);text-decoration:none;transition:color 0.15s;}
+.cs-guide span,.cs-guide{border-bottom:1px dashed rgba(232,196,96,0.4);}
+.cs-guide{width:fit-content;margin-left:auto;margin-right:auto;}
 .cs-guide:hover{color:#e8c460;}
+.cs-share{display:inline-block;margin-top:1.1rem;background:rgba(200,151,30,0.14);border:1.5px solid var(--gold);color:var(--gold2);border-radius:24px;padding:0.5rem 1.4rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;transition:background 0.15s,transform 0.15s;}
+.cs-share:hover{background:rgba(200,151,30,0.28);transform:translateY(-2px);}
 .count-row{display:flex;gap:0.7rem;justify-content:center;margin-bottom:1.6rem;}
 .count-btn{
   width:54px;height:54px;border-radius:14px;border:2px solid rgba(200,151,30,0.4);
@@ -128,21 +132,21 @@ html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nuni
   font-size:0.95rem;font-weight:700;outline:none;
 }
 .prow-name::placeholder{color:rgba(240,228,194,0.35);font-weight:600;}
-.prow-emojis{display:flex;gap:0.25rem;flex-wrap:wrap;margin-top:0.4rem;}
+.prow-emojis{display:grid;grid-template-columns:repeat(6,1fr);gap:0.35rem;margin-top:0.5rem;}
 .prow-emoji{
-  width:26px;height:26px;border-radius:7px;border:1px solid transparent;
-  display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;
-  background:rgba(255,255,255,0.05);transition:transform 0.1s;
+  aspect-ratio:1;border-radius:10px;border:1.5px solid transparent;
+  display:flex;align-items:center;justify-content:center;font-size:1.55rem;cursor:pointer;
+  background:rgba(255,255,255,0.05);transition:transform 0.12s,background 0.12s,border-color 0.12s;
 }
-.prow-emoji:hover{transform:scale(1.15);}
-.prow-emoji.sel{border-color:var(--gold2);background:rgba(200,151,30,0.25);}
+.prow-emoji:hover{transform:scale(1.15);background:rgba(200,151,30,0.18);}
+.prow-emoji.sel{border-color:var(--gold2);background:rgba(200,151,30,0.28);transform:scale(1.05);}
 .prow-hint{font-size:0.6rem;color:rgba(240,228,194,0.4);margin-top:0.25rem;letter-spacing:0.03em;}
 
 /* ══════════════════════════════════
    HEADER
 ══════════════════════════════════ */
 header {
-  position:fixed; top:0; left:0; right:0; height:56px;
+  position:fixed; top:0; left:0; right:0; height:64px;
   background:linear-gradient(180deg,#1a2e50,#0f1e38);
   border-bottom:3px solid var(--gold);
   display:flex; align-items:center; justify-content:space-between;
@@ -162,22 +166,44 @@ header {
 .hdr-turn{font-family:'Nunito',sans-serif;font-size:1.02rem;font-weight:900;line-height:1.05;color:var(--pc);
   filter:brightness(1.6) saturate(1.2);white-space:nowrap;}
 
-.gem-center{display:flex;flex-direction:column;align-items:center;gap:0.18rem;}
-.gem-track{display:flex;gap:0.25rem;align-items:center;}
-.team-score{font-family:'Nunito',sans-serif;font-size:0.56rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold2);white-space:nowrap;}
+.gem-center{display:flex;flex-direction:column;align-items:center;gap:0.1rem;justify-content:center;}
+.gem-track{display:flex;gap:0.2rem;align-items:center;}
+.team-score{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold2);white-space:nowrap;}
 .gem-slot{
+  position:relative; overflow:hidden;
   width:26px;height:26px;border-radius:50%;
   border:1.5px solid rgba(200,151,30,0.25);
   display:flex;align-items:center;justify-content:center;
-  font-size:0.9rem; background:rgba(0,0,0,0.3); transition:all 0.4s;
+  font-size:0.9rem; background:rgba(0,0,0,0.3); transition:border-color 0.4s,background 0.4s;
 }
-.gem-slot.locked{opacity:0.28;filter:grayscale(1);}
+/* LOCKED: dim & grey, but gently twinkles so kids know it's gettable */
+.gem-slot.locked{
+  filter:grayscale(0.85) brightness(0.7);
+  animation:gemTwinkle 2.4s ease-in-out infinite; animation-delay:var(--tw,0s);
+}
+@keyframes gemTwinkle{
+  0%,100%{opacity:0.32; transform:scale(1);}
+  50%{opacity:0.6; transform:scale(1.08); filter:grayscale(0.5) brightness(1);}
+}
+/* UNLOCKED: full colour, gold ring, and a random lustre sweep */
 .gem-slot.unlocked{
   border-color:var(--gold2); background:rgba(200,151,30,0.12);
   box-shadow:0 0 7px rgba(232,196,96,0.45);
+  filter:none; opacity:1;
   animation:slotPop 0.5s ease forwards;
 }
+/* the moving shine, staggered per gem via --lu delay */
+.gem-slot.unlocked::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.85) 50%,transparent 70%);
+  transform:translateX(-130%);
+  animation:gemLustre 5s ease-in-out infinite; animation-delay:var(--lu,2s);
+}
 @keyframes slotPop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
+@keyframes gemLustre{
+  0%,82%,100%{transform:translateX(-130%);}
+  88%{transform:translateX(130%);}   /* quick glint, then rest */
+}
 
 .zoom-row{display:flex;align-items:center;gap:0.32rem;}
 .zbtn{
@@ -192,7 +218,7 @@ header {
 /* ══════════════════════════════════
    DOCUMENT
 ══════════════════════════════════ */
-.split{position:fixed;top:56px;left:0;right:0;bottom:0;display:flex;}
+.split{position:fixed;top:64px;left:0;right:0;bottom:0;display:flex;}
 .scroll-area{
   flex:1;min-width:0;
   overflow:auto;display:flex;justify-content:center;align-items:flex-start;
@@ -332,7 +358,7 @@ header {
 /* On phones the panel slides over the document instead of splitting */
 @media(max-width:760px){
   .side-panel{
-    position:fixed;top:56px;right:0;bottom:0;width:min(440px,93vw);
+    position:fixed;top:64px;right:0;bottom:0;width:min(440px,93vw);
     transform:translateX(105%);transition:transform 0.25s ease;
     z-index:700;box-shadow:-12px 0 44px rgba(0,0,0,0.6);
   }
@@ -661,7 +687,9 @@ header {
     </div>
     <div id="player-rows"></div>
     <button id="start-btn" class="cs-btn" style="display:none;background:var(--gold);color:var(--blue);margin-top:1.6rem;padding:0.7rem 2rem;font-size:0.95rem;" onclick="startQuest()">Start the Quest ✦</button>
+    <button class="cs-share" onclick="shareIntro(this)">↗ Share this game</button>
     <a class="cs-guide" href="constitutional-quest-fhe-guide.pdf" target="_blank" rel="noopener">📄 For parents &amp; teachers — read the lesson guide</a>
+    <a class="cs-guide" href="#" onclick="openAbout();return false;">👋 About the author</a>
   </div>
 
  </div>
@@ -1397,17 +1425,24 @@ function setCount(n) {
       b.textContent = a;
       b.title = AVATAR_MEANING[a];
       b.onclick = () => pickAvatar(i, a);
+      // hover previews the emoji in the big circle + its meaning; reverts on leave
+      b.onmouseenter = () => previewAvatar(i, a);
+      b.onmouseleave = () => previewAvatar(i, players[i].avatar);
       er.appendChild(b);
     });
   }
   document.getElementById('start-btn').style.display = 'inline-block';
 }
 
-function pickAvatar(i, a) {
-  players[i].avatar = a;
+// Show an emoji in player i's big circle + its meaning (used on hover, doesn't commit).
+function previewAvatar(i, a) {
   document.getElementById('pa-' + i).textContent = a;
   const h = document.getElementById('ph-' + i);
   if (h) h.textContent = AVATAR_MEANING[a] || '';
+}
+function pickAvatar(i, a) {
+  players[i].avatar = a;
+  previewAvatar(i, a);
   document.querySelectorAll(`#pe-${i} .prow-emoji`).forEach(e =>
     e.classList.toggle('sel', e.textContent === a));
 }
@@ -1579,28 +1614,38 @@ function closeAbout() { document.getElementById('about-modal').classList.remove(
 
 // ───────────── TITLE PREVIEW CAROUSEL ─────────────
 const PREVIEW = [
-  { e:'🙏', q:'“…endowed by their Creator with certain unalienable Rights”', r:'Declaration of Independence' },
-  { e:'📜', q:'“I established the Constitution of this land…”', r:'Doctrine & Covenants 101:80' },
-  { e:'🌍', q:'“…belongs to all mankind, and is justifiable before me.”', r:'Doctrine & Covenants 98:5' },
-  { e:'🗳️', q:'“…to do your business by the voice of the people.”', r:'Mosiah 29:26' },
-  { e:'🚩', q:'“In memory of our God, our religion, and freedom…”', r:'Alma 46:12 — the Title of Liberty' },
-  { e:'🕊️', q:'“The free exercise of religion is essential to God\'s plan of salvation.”', r:'President Dallin H. Oaks' },
-  { e:'👨‍👩‍👧‍👦', q:'“…sealed to our loved ones for all eternity!”', r:'President Russell M. Nelson' }
+  { q:'…endowed by their Creator with certain unalienable Rights', r:'Declaration of Independence' },
+  { q:'I established the Constitution of this land…', r:'Doctrine & Covenants 101:80' },
+  { q:'…belongs to all mankind, and is justifiable before me.', r:'Doctrine & Covenants 98:5' },
+  { q:'…to do your business by the voice of the people.', r:'Mosiah 29:26' },
+  { q:'In memory of our God, our religion, and freedom…', r:'Alma 46:12 — the Title of Liberty' },
+  { q:'The free exercise of religion is essential to God\'s plan of salvation.', r:'President Dallin H. Oaks' },
+  { q:'…sealed to our loved ones for all eternity!', r:'President Russell M. Nelson' }
 ];
 let pvIdx = 0, pvTimer = null;
-function renderPreview() {
+function paintPreview() {
   const c = document.getElementById('preview-card');
   if (!c) return;
   const p = PREVIEW[pvIdx];
-  c.classList.remove('fade'); void c.offsetWidth; c.classList.add('fade');
-  c.innerHTML = `<div class="pv-emoji">${p.e}</div><div class="pv-quote">${p.q}</div><div class="pv-ref">${p.r}</div>`;
+  c.innerHTML = `<div class="pv-quote">${p.q}</div><div class="pv-ref">${p.r}</div>`;
   document.getElementById('preview-dots').innerHTML =
     PREVIEW.map((_, i) => `<div class="pd${i === pvIdx ? ' on' : ''}"></div>`).join('');
 }
+// True crossfade: fade out → swap text → fade in. Smooth, no snap.
+function advancePreview() {
+  const c = document.getElementById('preview-card');
+  if (!c) return;
+  c.classList.add('fading');                 // fade current out
+  setTimeout(() => {
+    pvIdx = (pvIdx + 1) % PREVIEW.length;
+    paintPreview();
+    c.classList.remove('fading');            // fade new in
+  }, 700);
+}
 function startPreview() {
-  renderPreview();
+  pvIdx = 0; paintPreview();
   clearInterval(pvTimer);
-  pvTimer = setInterval(() => { pvIdx = (pvIdx + 1) % PREVIEW.length; renderPreview(); }, 6000);
+  pvTimer = setInterval(advancePreview, 8500);   // slower, calmer
 }
 function stopPreview() { clearInterval(pvTimer); }
 
@@ -1749,6 +1794,17 @@ function shareWin(btn) {
   }, `${names} completed The Constitutional Quest! 🇺🇸💎`, btn);
 }
 
+// Share an invite from the front page.
+function shareIntro(btn) {
+  shareCard({
+    emoji: '💎',
+    title: 'Hidden Gems of the Constitution',
+    quote: 'A family treasure hunt — discover how God protected freedom so families can be together forever.',
+    ref: 'A Family Home Evening game',
+    footer: 'Play free:'
+  }, 'Play “Hidden Gems of the Constitution” — a faith-building game for FHE! 🇺🇸💎📜', btn);
+}
+
 // Pass the turn to the next player (wraps around).
 function nextTurn() {
   cur = (cur + 1) % players.length;
@@ -1758,12 +1814,16 @@ function nextTurn() {
 function buildGemTrack() {
   const t = document.getElementById('gem-track');
   t.innerHTML = '';
-  GEMS.forEach(g => {
+  GEMS.forEach((g, i) => {
+    const got = unlocked.has(g.id);
     const s = document.createElement('div');
-    s.className = 'gem-slot ' + (unlocked.has(g.id) ? 'unlocked' : 'locked');
+    s.className = 'gem-slot ' + (got ? 'unlocked' : 'locked');
     s.id = 'slot-' + g.id;
-    s.textContent = unlocked.has(g.id) ? g.gem : '○';
-    s.title = unlocked.has(g.id) ? g.gemName : 'Locked';
+    s.textContent = g.gem;                              // always show the gem (dim when locked)
+    s.title = got ? g.gemName : g.gemName + ' — not found yet';
+    // stagger the twinkle/lustre so they shimmer at different moments
+    s.style.setProperty('--tw', (i * 0.37).toFixed(2) + 's');
+    s.style.setProperty('--lu', (1.1 + Math.random() * 4).toFixed(2) + 's');
     t.appendChild(s);
   });
   const noun = level === 2 ? 'scroll' : level === 3 ? 'crown' : 'gem';

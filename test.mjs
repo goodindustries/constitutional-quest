@@ -19,9 +19,9 @@ await page.goto(URL, { waitUntil: 'networkidle0' });
 
 // ── TITLE: preview carousel ──
 check(await page.$('#preview-card'), 'title preview carousel present');
-const pv1 = await page.$eval('#preview-card', e => e.textContent);
-await wait(6300);
-const pv2 = await page.$eval('#preview-card', e => e.textContent);
+const pv1 = await page.$eval('#preview-card .pv-quote', e => e.textContent);
+await wait(9600);
+const pv2 = await page.$eval('#preview-card .pv-quote', e => e.textContent);
 check(pv1 !== pv2, 'preview carousel rotates quotes');
 
 // ── About the author (fixed) ──
