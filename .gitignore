@@ -1,0 +1,9 @@
+node_modules/
+.netlify/
+# scratch screenshots from local testing
+card.png
+header.png
+setup.png
+tour.png
+finale.png
+shot.mjs

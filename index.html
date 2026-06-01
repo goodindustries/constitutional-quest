@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+<title>Constitutional Quest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+<meta name="description" content="A treasure-hunt game for kids: find 8 gems in the Declaration of Independence and the Constitution, and learn why religious freedom matters.">
+<meta property="og:title" content="The Constitutional Quest">
+<meta property="og:description" content="Find 8 gems in the Declaration &amp; Constitution — a faith-building game for kids.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --parch: #f5ecd5;
+  --parch2: #e8d9b0;
+  --ink: #1e1206;
+  --ink2: #3a2410;
+  --gold: #c8971e;
+  --gold2: #e8c460;
+  --blue: #1a2e50;
+  --blue2: #2a4a7f;
+  --sage: #3d5c3a;
+  --red: #7a1c1c;
+  /* current player's theme — set live by JS from the player's color */
+  --pc: #c4588a;
+  --ps: #fce8f3;
+  --pb: #e8a0c4;
+}
+
+html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nunito',sans-serif; }
+
+/* ══════════════════════════════════
+   CHARACTER SELECT
+══════════════════════════════════ */
+#char-screen {
+  position:fixed; inset:0; z-index:2000;
+  background: radial-gradient(ellipse at 30% 40%, #0d1a2e 0%, #08050f 70%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:2rem;
+}
+.cs-eyebrow { font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold2); margin-bottom:0.3rem; text-align:center; }
+.cs-title { font-family:'Cinzel',serif; font-size:2rem; font-weight:700; color:#f5ecd5; text-align:center; margin-bottom:0.2rem; letter-spacing:0.05em; }
+.cs-sub { font-size:0.85rem; color:rgba(240,228,194,0.5); text-align:center; margin-bottom:0.4rem; }
+.cs-gems { display:flex; gap:0.4rem; justify-content:center; margin-bottom:2rem; }
+.cs-gem { font-size:1.4rem; opacity:0.25; animation:gemPulse 2s ease-in-out infinite; }
+.cs-gem:nth-child(1){animation-delay:0s}.cs-gem:nth-child(2){animation-delay:0.28s}
+.cs-gem:nth-child(3){animation-delay:0.56s}.cs-gem:nth-child(4){animation-delay:0.84s}
+.cs-gem:nth-child(5){animation-delay:1.12s}.cs-gem:nth-child(6){animation-delay:1.4s}
+.cs-gem:nth-child(7){animation-delay:1.68s}
+@keyframes gemPulse{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:0.6;transform:scale(1.15)}}
+
+@keyframes floatEl{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-6px) rotate(12deg)}}
+.cs-btn {
+  display:inline-block; padding:0.42rem 1.1rem; border-radius:30px;
+  font-family:'Nunito',sans-serif; font-size:0.74rem; font-weight:800;
+  letter-spacing:0.06em; text-transform:uppercase; border:none; cursor:pointer; transition:opacity 0.15s,transform 0.15s;
+}
+.cs-btn:hover{opacity:0.88;transform:scale(1.04)}
+
+/* ── PLAYER SETUP ── */
+.setup-q{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold2);margin-bottom:0.7rem;letter-spacing:0.04em;}
+.count-row{display:flex;gap:0.7rem;justify-content:center;margin-bottom:1.6rem;}
+.count-btn{
+  width:54px;height:54px;border-radius:14px;border:2px solid rgba(200,151,30,0.4);
+  background:rgba(255,255,255,0.04);color:#f5ecd5;
+  font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;cursor:pointer;
+  transition:transform 0.15s,border-color 0.15s,background 0.15s;
+}
+.count-btn:hover{transform:translateY(-3px);}
+.count-btn.sel{border-color:var(--gold2);background:rgba(200,151,30,0.22);box-shadow:0 0 18px rgba(232,196,96,0.4);color:#fff;}
+
+#player-rows{display:flex;flex-direction:column;gap:0.85rem;width:min(440px,92vw);}
+.prow{
+  display:flex;align-items:center;gap:0.7rem;
+  background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);
+  border-radius:14px;padding:0.6rem 0.8rem;transition:border-color 0.2s;
+}
+.prow-avatar{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.8rem;cursor:pointer;
+  border:2px solid rgba(255,255,255,0.25);transition:transform 0.15s;user-select:none;
+}
+.prow-avatar:hover{transform:scale(1.08);}
+.prow-mid{flex:1;min-width:0;}
+.prow-name{
+  width:100%;background:rgba(0,0,0,0.25);border:none;border-radius:8px;
+  padding:0.45rem 0.7rem;color:#f5ecd5;font-family:'Nunito',sans-serif;
+  font-size:0.95rem;font-weight:700;outline:none;
+}
+.prow-name::placeholder{color:rgba(240,228,194,0.35);font-weight:600;}
+.prow-emojis{display:flex;gap:0.25rem;flex-wrap:wrap;margin-top:0.4rem;}
+.prow-emoji{
+  width:26px;height:26px;border-radius:7px;border:1px solid transparent;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;
+  background:rgba(255,255,255,0.05);transition:transform 0.1s;
+}
+.prow-emoji:hover{transform:scale(1.15);}
+.prow-emoji.sel{border-color:var(--gold2);background:rgba(200,151,30,0.25);}
+.prow-hint{font-size:0.6rem;color:rgba(240,228,194,0.4);margin-top:0.25rem;letter-spacing:0.03em;}
+
+/* ══════════════════════════════════
+   HEADER
+══════════════════════════════════ */
+header {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  background:linear-gradient(180deg,#1a2e50,#0f1e38);
+  border-bottom:3px solid var(--gold);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 1rem; z-index:500;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);
+}
+.hdr-l{display:flex;align-items:center;gap:0.6rem;}
+.pbadge {
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;transition:transform 0.15s;
+  border:2.5px solid var(--pc);flex-shrink:0;
+}
+.pbadge.bump{animation:badgeBump 0.5s ease;}
+@keyframes badgeBump{0%{transform:scale(0.6)}55%{transform:scale(1.25)}100%{transform:scale(1)}}
+.hdr-eyebrow{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(232,196,96,0.5);line-height:1;margin-bottom:2px;}
+.hdr-turn{font-family:'Nunito',sans-serif;font-size:1.02rem;font-weight:900;line-height:1.05;color:var(--pc);
+  filter:brightness(1.6) saturate(1.2);white-space:nowrap;}
+
+.gem-center{display:flex;flex-direction:column;align-items:center;gap:0.18rem;}
+.gem-track{display:flex;gap:0.25rem;align-items:center;}
+.team-score{font-family:'Nunito',sans-serif;font-size:0.56rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold2);white-space:nowrap;}
+.gem-slot{
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid rgba(200,151,30,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem; background:rgba(0,0,0,0.3); transition:all 0.4s;
+}
+.gem-slot.locked{opacity:0.28;filter:grayscale(1);}
+.gem-slot.unlocked{
+  border-color:var(--gold2); background:rgba(200,151,30,0.12);
+  box-shadow:0 0 7px rgba(232,196,96,0.45);
+  animation:slotPop 0.5s ease forwards;
+}
+@keyframes slotPop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
+
+.zoom-row{display:flex;align-items:center;gap:0.32rem;}
+.zbtn{
+  background:rgba(200,151,30,0.15);border:1px solid var(--gold);
+  color:var(--gold2);width:28px;height:28px;border-radius:5px;
+  font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;
+}
+.zbtn:hover{background:rgba(200,151,30,0.35);}
+.zlabel{font-size:0.6rem;color:rgba(232,196,96,0.6);min-width:30px;text-align:center;font-family:'Cinzel',serif;}
+
+/* ══════════════════════════════════
+   DOCUMENT
+══════════════════════════════════ */
+.split{position:fixed;top:56px;left:0;right:0;bottom:0;display:flex;}
+.scroll-area{
+  flex:1;min-width:0;
+  overflow:auto;display:flex;justify-content:center;align-items:flex-start;
+  padding:1.5rem 1rem 5rem;
+  background:radial-gradient(ellipse at center,#1a1408 0%,#0d0a05 100%);
+}
+.document{
+  position:relative;transform-origin:top center;transition:transform 0.2s;
+  width:820px;
+  background-color:var(--parch);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    linear-gradient(160deg,rgba(255,248,220,0.5) 0%,rgba(200,175,120,0.2) 100%);
+  padding:4rem 5rem;
+  box-shadow:0 0 0 1px rgba(120,90,30,0.4),0 0 60px rgba(0,0,0,0.7),inset 0 0 60px rgba(150,110,50,0.08);
+}
+.document::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 0% 0%,rgba(140,100,35,0.18) 0%,transparent 45%),
+    radial-gradient(ellipse at 100% 100%,rgba(100,70,20,0.18) 0%,transparent 45%);
+}
+
+/* ── TYPOGRAPHY ── */
+.doc-eyebrow-d{
+  font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.4em;
+  text-transform:uppercase;text-align:center;color:var(--red);margin-bottom:0.35rem;
+}
+.doc-main{
+  font-family:'Cinzel',serif;font-size:2.8rem;font-weight:700;
+  text-align:center;color:var(--ink);line-height:1.1;margin-bottom:0.15rem;
+  letter-spacing:0.04em;
+}
+.doc-sub{
+  font-family:'Lora',serif;font-style:italic;font-size:1rem;
+  text-align:center;color:rgba(30,18,6,0.5);margin-bottom:0.5rem;
+}
+.orn{text-align:center;color:var(--gold);letter-spacing:0.5em;font-size:0.75rem;margin:0.45rem 0;}
+.rule{border:none;border-top:1px solid rgba(30,18,6,0.15);margin:1rem 0;}
+.rule-dbl{border:none;height:2px;margin:1.4rem 0;background:linear-gradient(90deg,transparent,rgba(30,18,6,0.2),rgba(30,18,6,0.3),rgba(30,18,6,0.2),transparent);}
+
+.art-head{
+  font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--red);display:block;margin:1.5rem 0 0.4rem;
+}
+.art-head.blue{color:var(--blue2);}
+
+/* Main body: Lora serif — highly legible period-appropriate font */
+.body-text{
+  font-family:'Lora',serif;font-size:0.96rem;line-height:1.95;
+  color:var(--ink);text-align:justify;
+  position:relative;
+}
+.body-text p { margin-bottom:0.6rem; }
+.body-text p:last-child { margin-bottom:0; }
+
+.drop-cap::first-letter{
+  font-family:'Cinzel',serif;font-size:4.2rem;font-weight:700;
+  float:left;line-height:0.78;margin-right:0.07em;margin-top:0.14em;color:var(--blue);
+}
+
+/* ── HOTSPOTS ── */
+.hs{
+  cursor:pointer;position:relative;
+  border-bottom:2px dashed var(--gold);
+  background:rgba(200,151,30,0.12);
+  border-radius:2px;padding:0 3px;
+  transition:background 0.18s;display:inline;
+}
+.hs:hover,.hs.active{background:rgba(200,151,30,0.3);border-bottom-style:solid;}
+.hs.done{border-bottom-color:rgba(200,151,30,0.4);background:rgba(200,151,30,0.06);cursor:pointer;}
+.gem-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:19px;height:19px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.35);
+  font-size:0.68rem;vertical-align:super;margin-left:2px;
+  box-shadow:0 1px 5px rgba(0,0,0,0.4);transition:transform 0.15s,filter 0.15s;cursor:pointer;
+}
+.gem-badge.locked{background:rgba(60,40,10,0.55);filter:grayscale(1);opacity:0.45;}
+.gem-badge.lit{filter:none;animation:badgePop 0.4s ease;}
+.hs:hover .gem-badge{transform:scale(1.25);}
+@keyframes badgePop{0%{transform:scale(0.5) rotate(-20deg);opacity:0}70%{transform:scale(1.4) rotate(5deg)}100%{transform:scale(1);opacity:1}}
+
+/* ── HINT BAR ── */
+.hint{
+  position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);
+  background:rgba(26,46,80,0.92);border:1px solid var(--gold);
+  border-radius:30px;padding:0.4rem 1.2rem;
+  font-size:0.62rem;letter-spacing:0.1em;color:var(--gold2);
+  text-transform:uppercase;z-index:300;pointer-events:none;
+  display:flex;align-items:center;gap:0.5rem;white-space:nowrap;
+}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--pc);animation:pulse 1.8s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+
+/* ══════════════════════════════════
+   POPUP
+══════════════════════════════════ */
+/* ── SIDE PANEL (right half) ── */
+.side-panel{
+  width:clamp(360px,42%,520px);flex-shrink:0;
+  background:#0f0a14;border-left:3px solid var(--gold);
+  overflow-y:auto;position:relative;
+}
+.panel-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;height:100%;padding:2rem 1.6rem;gap:0.85rem;
+}
+.pe-icon{font-size:3rem;opacity:0.85;}
+.panel-empty p{font-size:0.9rem;color:rgba(240,228,194,0.6);line-height:1.65;max-width:270px;}
+.pe-gold{color:var(--gold2);font-weight:700;}
+.pe-gems{font-size:1.3rem;letter-spacing:0.18em;opacity:0.4;margin-top:0.4rem;}
+.panel-card{position:relative;background:#fdf8ed;min-height:100%;}
+
+/* whose-turn banner — lives in the right sidebar */
+.turn-banner{
+  font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:900;
+  letter-spacing:0.06em;text-transform:uppercase;text-align:center;
+  padding:0.6rem 1rem;color:#fff;background:var(--pc);
+  border-bottom:3px solid var(--pb);
+}
+.panel-empty .turn-banner{
+  border-radius:30px;border:none;margin-bottom:1.4rem;
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);padding:0.55rem 1.4rem;font-size:0.86rem;
+}
+.card-turn{border-radius:10px 10px 0 0;}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(6,4,2,0.55);z-index:600;}
+
+.popup-close{
+  position:absolute;top:0.7rem;right:0.8rem;
+  background:rgba(30,18,6,0.55);border:none;color:#fdf8ed;
+  width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:10;transition:background 0.15s;
+}
+.popup-close:hover{background:rgba(30,18,6,0.88);}
+
+/* On phones the panel slides over the document instead of splitting */
+@media(max-width:760px){
+  .side-panel{
+    position:fixed;top:56px;right:0;bottom:0;width:min(440px,93vw);
+    transform:translateX(105%);transition:transform 0.25s ease;
+    z-index:700;box-shadow:-12px 0 44px rgba(0,0,0,0.6);
+  }
+  .side-panel.open{transform:translateX(0);}
+  .panel-empty{display:none;}
+  .overlay.open{display:block;}
+}
+
+/* image */
+.p-img-wrap{position:relative;width:100%;height:182px;overflow:hidden;cursor:zoom-in;}
+.p-img-wrap img{width:100%;height:182px;object-fit:cover;display:block;position:relative;z-index:1;}
+.p-img-zoom{
+  position:absolute;bottom:8px;right:8px;z-index:3;
+  background:rgba(0,0,0,0.55);color:#fff;border-radius:20px;
+  padding:0.18rem 0.6rem;font-size:0.62rem;font-weight:700;font-family:'Nunito',sans-serif;
+  display:flex;align-items:center;gap:0.25rem;pointer-events:none;
+}
+
+/* full-image lightbox */
+.lightbox{display:none;position:fixed;inset:0;z-index:5000;background:rgba(4,3,8,0.92);
+  align-items:center;justify-content:center;flex-direction:column;gap:0.9rem;padding:1.5rem;cursor:zoom-out;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:94vw;max-height:78vh;object-fit:contain;border-radius:10px;box-shadow:0 20px 70px rgba(0,0,0,0.8);}
+.lightbox .lb-cap{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(240,228,194,0.85);text-align:center;max-width:90vw;}
+.lightbox .lb-close{position:absolute;top:1rem;right:1.1rem;background:rgba(255,255,255,0.15);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;}
+
+/* ── HOW-TO-PLAY TOUR ── */
+.tour{display:none;position:fixed;inset:0;z-index:6000;background:rgba(6,4,12,0.82);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:1.5rem;}
+.tour.open{display:flex;}
+.tour-card{
+  width:min(420px,94vw);background:linear-gradient(160deg,#1c2c4a,#101a30);
+  border:2px solid var(--gold);border-radius:18px;padding:1.8rem 1.6rem 1.4rem;
+  text-align:center;box-shadow:0 24px 70px rgba(0,0,0,0.7);
+  animation:tourPop 0.35s cubic-bezier(.2,1.3,.4,1);
+}
+@keyframes tourPop{0%{transform:scale(0.85);opacity:0}100%{transform:scale(1);opacity:1}}
+.tour-emoji{font-size:3.2rem;margin-bottom:0.5rem;animation:tourBob 2s ease-in-out infinite;}
+@keyframes tourBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.tour-step{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold2);margin-bottom:0.45rem;}
+.tour-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:#f5ecd5;margin-bottom:0.5rem;}
+.tour-text{font-size:0.95rem;line-height:1.65;color:rgba(240,228,194,0.85);margin-bottom:1.1rem;}
+.tour-text b{color:var(--gold2);}
+.tour-dots{display:flex;gap:0.4rem;justify-content:center;margin-bottom:1.2rem;}
+.tour-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.22);transition:background 0.2s,transform 0.2s;}
+.tour-dot.on{background:var(--gold2);transform:scale(1.3);}
+.tour-btns{display:flex;justify-content:space-between;align-items:center;}
+.tour-skip{background:none;border:none;color:rgba(240,228,194,0.5);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;}
+.tour-skip:hover{color:rgba(240,228,194,0.8);}
+.tour-next{background:var(--gold);color:var(--blue);border:none;border-radius:30px;padding:0.5rem 1.5rem;font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;letter-spacing:0.06em;cursor:pointer;transition:transform 0.15s,opacity 0.15s;}
+.tour-next:hover{transform:scale(1.05);}
+.p-img-fallback{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0.35rem;z-index:0;
+}
+.p-img-fallback span{font-size:3.5rem;}
+.p-img-fallback p{font-size:0.65rem;color:rgba(255,255,255,0.45);font-family:'Nunito',sans-serif;text-align:center;padding:0 1rem;}
+.p-img-border{border-bottom:2.5px solid var(--pc);}
+
+/* popup body */
+.p-body{padding:1.2rem 1.5rem 1.6rem;}
+.p-player-tag{
+  display:inline-flex;align-items:center;gap:0.32rem;
+  background:var(--ps);border:1px solid var(--pb);
+  border-radius:20px;padding:0.18rem 0.7rem;
+  font-size:0.58rem;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--pc);margin-bottom:0.65rem;
+}
+.p-title{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;color:var(--blue);line-height:1.2;margin-bottom:0.32rem;}
+.p-const{
+  font-family:'Lora',serif;font-style:italic;font-size:0.88rem;
+  color:rgba(30,18,6,0.5);border-left:3px solid var(--gold);
+  padding-left:0.7rem;margin-bottom:0.85rem;line-height:1.6;
+}
+.p-explain{font-size:0.92rem;color:#1a1008;line-height:1.8;margin-bottom:0.85rem;}
+.p-explain strong{color:var(--blue);}
+
+/* repeating core-thesis box — same on every card so it sinks in */
+.p-thesis{background:rgba(200,151,30,0.1);border:1.5px solid rgba(200,151,30,0.5);border-radius:10px;padding:0.7rem 0.9rem;margin-bottom:0.85rem;}
+.p-thesis-head{font-size:0.56rem;font-weight:900;letter-spacing:0.13em;text-transform:uppercase;color:var(--gold);margin-bottom:0.35rem;}
+.p-thesis-chain{font-size:0.82rem;line-height:1.7;color:#1a1008;font-weight:700;}
+.p-thesis-chain b{color:var(--red);}
+
+/* quest box */
+.q-box{background:var(--ps);border:2px solid var(--pb);border-radius:10px;padding:0.95rem 1rem;margin-bottom:0.85rem;}
+.q-label{font-size:0.58rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;color:var(--pc);margin-bottom:0.45rem;display:flex;align-items:center;gap:0.3rem;}
+.q-prompt{font-size:0.93rem;line-height:1.8;color:#1a1008;font-weight:600;margin-bottom:0.65rem;}
+.q-blank{color:var(--pc);font-weight:900;border-bottom:2px solid var(--pc);padding:0 0.15rem;}
+/* tap-to-answer picture buttons */
+.q-choices{display:flex;flex-direction:column;gap:0.55rem;}
+.q-choice{
+  display:flex;align-items:center;gap:0.7rem;width:100%;
+  padding:0.7rem 0.9rem;border:2.5px solid var(--pb);border-radius:12px;
+  background:#fff;cursor:pointer;text-align:left;
+  font-family:'Nunito',sans-serif;transition:transform 0.12s,border-color 0.15s,background 0.15s;
+}
+.q-choice:hover:not(:disabled){transform:translateY(-2px);border-color:var(--pc);}
+.q-choice:disabled{cursor:default;}
+.q-choice-e{font-size:1.8rem;flex-shrink:0;line-height:1;}
+.q-choice-t{font-size:1.05rem;font-weight:800;color:var(--ink);}
+.q-choice.correct{border-color:#2e7a2a;background:rgba(46,122,42,0.12);animation:choicePop 0.4s ease;}
+.q-choice.correct .q-choice-t{color:#215e1e;}
+.q-choice.correct::after{content:'✓';margin-left:auto;color:#2e7a2a;font-weight:900;font-size:1.3rem;}
+.q-choice.wrong{border-color:#b52b2b;background:rgba(181,43,43,0.08);animation:shake 0.35s ease;opacity:0.55;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes choicePop{0%{transform:scale(0.96)}55%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+/* gem reveal */
+.gem-reveal{display:none;text-align:center;padding:0.7rem;background:rgba(200,151,30,0.09);border:1px solid rgba(200,151,30,0.4);border-radius:8px;margin-bottom:0.85rem;}
+.gem-reveal.show{display:block;animation:revealGem 0.55s ease;}
+@keyframes revealGem{0%{transform:scale(0.4) rotate(-18deg);opacity:0}70%{transform:scale(1.2) rotate(3deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+.gem-reveal-icon{font-size:2.3rem;display:block;margin-bottom:0.25rem;}
+.gem-reveal-text{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);}
+.gem-reveal-turn{margin-top:0.55rem;padding-top:0.5rem;border-top:1px dashed rgba(200,151,30,0.4);font-size:0.82rem;font-weight:700;color:var(--ink2);}
+.gem-reveal-turn strong{color:var(--pc);}
+
+.already-done{background:rgba(61,92,58,0.1);border:1.5px solid rgba(61,92,58,0.3);border-radius:8px;padding:0.65rem 0.9rem;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;font-size:0.84rem;color:var(--sage);font-weight:700;}
+
+/* scripture */
+.p-scripture{background:rgba(61,92,58,0.08);border-left:4px solid var(--sage);border-radius:0 7px 7px 0;padding:0.62rem 0.88rem;}
+.p-scripture .ref{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.14em;color:var(--sage);margin-bottom:0.22rem;}
+.p-scripture p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(30,18,6,0.8);line-height:1.65;}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(200,151,30,0.4);border-radius:4px;}
+
+/* ══ VICTORY ══ */
+#victory{display:none;position:fixed;inset:0;z-index:3000;background:radial-gradient(ellipse at center,#1a2e50,#08050f);overflow-y:auto;}
+#victory.show{display:block;}
+.v-inner{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.5rem 1.25rem 3.5rem;max-width:560px;margin:0 auto;}
+
+/* emoji rain */
+.emoji-rain{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.emoji-rain span{position:absolute;top:-8%;font-size:1.7rem;will-change:transform;animation:emojiFall linear forwards;}
+@keyframes emojiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:1;}
+  100%{transform:translateY(112vh) rotate(360deg);opacity:0.9;}
+}
+
+/* hero photo */
+.v-photo-wrap{position:relative;margin:0.4rem 0 1.4rem;animation:photoPop 0.7s cubic-bezier(.2,1.4,.4,1) both;}
+@keyframes photoPop{0%{transform:scale(0.4) rotate(-6deg);opacity:0;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.v-photo{display:block;width:min(330px,80vw);border-radius:18px;border:4px solid var(--gold2);box-shadow:0 18px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.1);}
+.v-photo-caption{margin-top:0.7rem;font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.05em;color:var(--gold2);}
+.v-reveal-line{font-family:'Lora',serif;font-size:1.06rem;line-height:1.65;color:#f5ecd5;margin-bottom:2rem;max-width:430px;}
+.v-reveal-line b{color:var(--gold2);font-weight:700;}
+.v-gems{font-size:2rem;letter-spacing:0.28em;margin-bottom:1rem;}
+.v-title{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:700;color:var(--gold2);margin-bottom:0.35rem;letter-spacing:0.04em;}
+.v-sub{font-size:0.95rem;color:rgba(240,228,194,0.6);margin-bottom:1.2rem;}
+
+/* finale roster — every player + how many gems they found */
+.v-roster{display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.6rem;}
+.v-pl{display:flex;flex-direction:column;align-items:center;gap:0.2rem;background:rgba(255,255,255,0.05);border:2px solid rgba(200,151,30,0.4);border-radius:14px;padding:0.6rem 0.9rem;min-width:74px;}
+.v-pl-av{font-size:1.7rem;}
+.v-pl-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;color:#f5ecd5;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.v-pl-gems{font-size:0.72rem;color:var(--gold2);font-weight:700;}
+
+/* thesis banner */
+.v-thesis{border-top:1px solid rgba(200,151,30,0.3);border-bottom:1px solid rgba(200,151,30,0.3);padding:1.1rem 0.5rem;margin-bottom:1.6rem;width:100%;}
+.v-thesis-head{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.34em;text-transform:uppercase;color:var(--gold2);margin-bottom:0.55rem;}
+.v-thesis p{font-family:'Lora',serif;font-size:1.05rem;line-height:1.6;color:rgba(240,228,194,0.92);}
+.v-thesis em{color:var(--gold2);font-style:italic;}
+
+/* chain of freedom */
+.v-chain{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:0.15rem;margin-bottom:1.3rem;}
+.v-link{display:flex;align-items:center;gap:0.85rem;text-align:left;background:rgba(255,255,255,0.04);border:1px solid rgba(200,151,30,0.22);border-radius:12px;padding:0.8rem 1rem;}
+.v-link-icon{font-size:1.7rem;flex-shrink:0;width:2.2rem;text-align:center;}
+.v-link strong{color:var(--gold2);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.92rem;}
+.v-link span.sub{color:rgba(240,228,194,0.6);font-size:0.78rem;line-height:1.4;}
+.v-arrow{color:var(--gold);font-size:1.05rem;line-height:1;opacity:0.7;}
+.v-punch{font-family:'Cinzel',serif;font-size:0.96rem;font-weight:600;color:#f5ecd5;line-height:1.7;margin-bottom:1.8rem;letter-spacing:0.02em;}
+.v-punch b{color:var(--gold2);}
+
+/* America 250 banner on the finale */
+.v-250{width:100%;max-width:460px;background:linear-gradient(160deg,rgba(122,28,28,0.28),rgba(26,46,80,0.32));border:2px solid var(--gold);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.4rem;text-align:center;}
+.v-250-flag{font-size:1.4rem;letter-spacing:0.3em;margin-bottom:0.4rem;}
+.v-250-big{font-family:'Cinzel',serif;font-size:1.35rem;font-weight:700;color:var(--gold2);margin-bottom:0.5rem;}
+.v-250-big b{color:#fff;}
+.v-250-text{font-size:0.9rem;line-height:1.6;color:rgba(240,228,194,0.85);margin-bottom:1rem;}
+.v-250-text b{color:var(--gold2);}
+.v-quote{background:rgba(0,0,0,0.22);border-left:3px solid var(--gold2);border-radius:0 8px 8px 0;padding:0.6rem 0.85rem;margin-bottom:0.65rem;text-align:left;}
+.v-quote p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;line-height:1.55;color:#f5ecd5;margin-bottom:0.3rem;}
+.v-quote-by{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.04em;color:rgba(232,196,96,0.85);}
+.v-250-note{font-size:0.74rem;line-height:1.5;color:rgba(240,228,194,0.65);margin-top:0.5rem;}
+.v-250-note b{color:rgba(240,228,194,0.85);}
+
+.v-scripture{background:rgba(61,92,58,0.2);border:1px solid rgba(61,92,58,0.4);border-radius:10px;padding:0.9rem 1.3rem;width:100%;max-width:440px;margin-bottom:1rem;text-align:left;}
+.v-scripture .ref{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;color:#a8c4a0;margin-bottom:0.25rem;}
+.v-scripture p{font-family:'Lora',serif;font-style:italic;font-size:0.92rem;color:rgba(240,228,194,0.8);line-height:1.6;}
+.v-restart{margin-top:0.8rem;padding:0.65rem 1.6rem;border-radius:30px;background:var(--gold);color:var(--blue);border:none;font-family:'Cinzel',serif;font-size:0.76rem;font-weight:700;letter-spacing:0.12em;cursor:pointer;transition:opacity 0.15s,transform 0.15s;text-transform:uppercase;}
+.v-restart:hover{opacity:0.88;transform:scale(1.04);}
+</style>
+</head>
+<body>
+
+<!-- ═══ PLAYER SETUP ═══ -->
+<div id="char-screen">
+  <div class="cs-eyebrow">The Constitutional Quest</div>
+  <div class="cs-title">Find the 8 Gems!</div>
+  <div class="cs-sub">Hidden in the Declaration &amp; the Constitution — take turns and find them together!</div>
+  <div class="cs-gems">
+    <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+    <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
+  </div>
+
+  <div class="setup-q">How many players?</div>
+  <div class="count-row" id="count-row">
+    <button class="count-btn" onclick="setCount(1)">1</button>
+    <button class="count-btn" onclick="setCount(2)">2</button>
+    <button class="count-btn" onclick="setCount(3)">3</button>
+    <button class="count-btn" onclick="setCount(4)">4</button>
+  </div>
+
+  <div id="player-rows"></div>
+
+  <button id="start-btn" class="cs-btn" style="display:none;background:var(--gold);color:var(--blue);margin-top:1.6rem;padding:0.65rem 2rem;font-size:0.9rem;" onclick="startQuest()">Start the Quest ✦</button>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="main-app" style="display:none">
+
+<header>
+  <div class="hdr-l">
+    <div class="pbadge" id="hdr-badge" title="Whose turn it is">🐝</div>
+    <div>
+      <div class="hdr-eyebrow">Constitutional Quest</div>
+      <div class="hdr-turn" id="hdr-sub">Player 1's turn</div>
+    </div>
+  </div>
+  <div class="gem-center">
+    <div class="gem-track" id="gem-track"></div>
+    <div class="team-score" id="team-score">🤝 Team: 0 of 8 gems found together</div>
+  </div>
+  <div class="zoom-row">
+    <button class="zbtn" onclick="zoom(-1)">−</button>
+    <span class="zlabel" id="zlabel">100%</span>
+    <button class="zbtn" onclick="zoom(1)">+</button>
+  </div>
+</header>
+
+<div class="split">
+<div class="scroll-area">
+<div class="document" id="doc">
+
+  <!-- ═══ THE DECLARATION OF INDEPENDENCE (1776) ═══ -->
+  <div style="text-align:center;margin-bottom:1.5rem;">
+    <div class="doc-eyebrow-d">In Congress — Philadelphia, July 4, 1776</div>
+    <div class="doc-main">The Declaration<br>of Independence</div>
+    <div class="doc-sub">Where America said our rights come from God</div>
+    <div class="orn">✦ ✦ ✦</div>
+  </div>
+
+  <span class="art-head">The Most Famous Words</span>
+  <div class="body-text drop-cap">
+    <p>We hold these truths to be self-evident, that all men are created equal, that they are <span class="hs" data-id="g8" onclick="openCard(this)">endowed by their Creator with certain unalienable Rights<span class="gem-badge locked" id="badge-g8">💎</span></span>, that among these are <span class="hs" data-id="g9" onclick="openCard(this)">Life, Liberty and the pursuit of Happiness<span class="gem-badge locked" id="badge-g9">💎</span></span>. — That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed.</p>
+  </div>
+
+  <div class="rule-dbl"></div>
+
+  <!-- ═══ THE CONSTITUTION (1787) ═══ -->
+  <div style="text-align:center;margin:1.5rem 0;">
+    <div class="doc-eyebrow-d">Ordained &amp; Established — Philadelphia, 1787</div>
+    <div class="doc-main">We the People</div>
+    <div class="doc-sub">Constitution of the United States of America</div>
+    <div class="orn">✦ ✦ ✦</div>
+  </div>
+
+  <!-- PREAMBLE -->
+  <span class="art-head">Preamble</span>
+  <div class="body-text drop-cap">
+    <p><span class="hs" data-id="g1" onclick="openCard(this)">We the People of the United States<span class="gem-badge locked" id="badge-g1">💎</span></span>, in Order to form a more perfect Union, establish Justice, insure domestic Tranquility, provide for the common defence, promote the general Welfare, and secure the <span class="hs" data-id="g2" onclick="openCard(this)">Blessings of Liberty to ourselves and our Posterity<span class="gem-badge locked" id="badge-g2">💎</span></span>, do ordain and establish this <span class="hs" data-id="g3" onclick="openCard(this)">Constitution for the United States of America<span class="gem-badge locked" id="badge-g3">💎</span></span>.</p>
+  </div>
+
+  <div class="rule-dbl"></div>
+
+  <!-- ARTICLE I -->
+  <span class="art-head">Article. I. — The Legislative Branch</span>
+  <div class="body-text">
+    <p>All legislative Powers herein granted shall be vested in a Congress of the United States, which shall consist of a Senate and House of Representatives. The House of Representatives shall be composed of Members chosen every second Year by the People of the several States, and the Electors in each State shall have the Qualifications requisite for Electors of the most numerous Branch of the State Legislature.</p>
+    <p>No Person shall be a Representative who shall not have attained to the Age of twenty five Years, and been seven Years a Citizen of the United States, and who shall not, when elected, be an Inhabitant of that State in which he shall be chosen.</p>
+    <p>The Senate of the United States shall be composed of two Senators from each State, chosen by the Legislature thereof, for six Years; and each Senator shall have one Vote.</p>
+    <p>No Person shall be a Senator who shall not have attained to the Age of thirty Years, and been nine Years a Citizen of the United States, and who shall not, when elected, be an Inhabitant of that State for which he shall be chosen.</p>
+    <p>Every Bill which shall have passed the House of Representatives and the Senate, shall, before it become a Law, be presented to the President of the United States; If he approve he shall sign it, but if not he shall return it. Congress shall have Power to lay and collect Taxes, Duties, Imposts and Excises, to pay the Debts and provide for the common Defence and general Welfare of the United States; To borrow Money on the credit of the United States; To regulate Commerce with foreign Nations, and among the several States; To coin Money, regulate the Value thereof; To establish Post Offices and post Roads; To declare War; To raise and support Armies; To provide and maintain a Navy; To make all Laws which shall be necessary and proper for carrying into Execution the foregoing Powers.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE II -->
+  <span class="art-head">Article. II. — The Executive Branch</span>
+  <div class="body-text">
+    <p>The executive Power shall be vested in a President of the United States of America. He shall hold his Office during the Term of four Years, and, together with the Vice President, chosen for the same Term, be elected, as follows: Each State shall appoint, in such Manner as the Legislature thereof may direct, a Number of Electors, equal to the whole Number of Senators and Representatives to which the State may be entitled in the Congress.</p>
+    <p>No Person except a natural born Citizen, or a Citizen of the United States, at the time of the Adoption of this Constitution, shall be eligible to the Office of President; neither shall any Person be eligible to that Office who shall not have attained to the Age of thirty five Years, and been fourteen Years a Resident within the United States.</p>
+    <p>Before he enter on the Execution of his Office, he shall take the following Oath or Affirmation: — <span class="hs" data-id="g4" onclick="openCard(this)">"I do solemnly swear (or affirm) that I will faithfully execute the Office of President of the United States, and will to the best of my Ability, preserve, protect and defend the Constitution of the United States."<span class="gem-badge locked" id="badge-g4">💎</span></span></p>
+    <p>The President shall be Commander in Chief of the Army and Navy of the United States. He shall have Power, by and with the Advice and Consent of the Senate, to make Treaties, and he shall nominate Judges of the supreme Court, and all other Officers of the United States.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE III -->
+  <span class="art-head">Article. III. — The Judicial Branch</span>
+  <div class="body-text">
+    <p>The judicial Power of the United States, shall be vested in one supreme Court, and in such inferior Courts as the Congress may from time to time ordain and establish. The Judges, both of the supreme and inferior Courts, shall hold their Offices during good Behaviour, and shall, at stated Times, receive for their Services, a Compensation, which shall not be diminished during their Continuance in Office.</p>
+    <p>The Trial of all Crimes, except in Cases of Impeachment, shall be by Jury; and such Trial shall be held in the State where the said Crimes shall have been committed.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE IV -->
+  <span class="art-head">Article. IV. — The States</span>
+  <div class="body-text">
+    <p>Full Faith and Credit shall be given in each State to the public Acts, Records, and judicial Proceedings of every other State. New States may be admitted by the Congress into this Union; but no new State shall be formed or erected within the Jurisdiction of any other State; nor any State be formed by the Junction of two or more States, or Parts of States, without the Consent of the Legislatures of the States concerned as well as of the Congress.</p>
+    <p>The United States shall guarantee to every State in this Union a Republican Form of Government, and shall protect each of them against Invasion.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE V -->
+  <span class="art-head">Article. V. — Amendments</span>
+  <div class="body-text">
+    <p>The Congress, whenever two thirds of both Houses shall deem it necessary, shall propose Amendments to this Constitution, or, on the Application of the Legislatures of two thirds of the several States, shall call a Convention for proposing Amendments, which shall be valid to all Intents and Purposes, as Part of this Constitution, when ratified by the Legislatures of three fourths of the several States.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE VI -->
+  <span class="art-head">Article. VI. — Supreme Law of the Land</span>
+  <div class="body-text">
+    <p>All Debts contracted and Engagements entered into, before the Adoption of this Constitution, shall be as valid against the United States under this Constitution, as under the Confederation. This Constitution, and the Laws of the United States which shall be made in Pursuance thereof; and all Treaties made, or which shall be made, under the Authority of the United States, shall be the <span class="hs" data-id="g5" onclick="openCard(this)">supreme Law of the Land; and the Judges in every State shall be bound thereby, any Thing in the Constitution or Laws of any State to the Contrary notwithstanding.<span class="gem-badge locked" id="badge-g5">💎</span></span></p>
+    <p>The Senators and Representatives before mentioned, and the Members of the several State Legislatures, and all executive and judicial Officers, both of the United States and of the several States, shall be bound by Oath or Affirmation, to support this Constitution; but no religious Test shall ever be required as a Qualification to any Office or public Trust under the United States.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <!-- ARTICLE VII -->
+  <span class="art-head">Article. VII. — Ratification</span>
+  <div class="body-text">
+    <p>The Ratification of the Conventions of nine States, shall be sufficient for the Establishment of this Constitution between the States so ratifying the Same.</p>
+  </div>
+
+  <div class="rule-dbl"></div>
+
+  <!-- AMENDMENTS -->
+  <span class="art-head blue">The Bill of Rights — Amendments I–X, Ratified December 15, 1791</span>
+  <div class="body-text">
+    <p><strong>Amendment I.</strong> &nbsp;<span class="hs" data-id="g7" onclick="openCard(this)">Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances.<span class="gem-badge locked" id="badge-g7">💎</span></span></p>
+    <p><strong>Amendment II.</strong> &nbsp;A well regulated Militia, being necessary to the security of a free State, the right of the people to keep and bear Arms, shall not be infringed.</p>
+    <p><strong>Amendment III.</strong> &nbsp;No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner, nor in time of war, but in a manner to be prescribed by law.</p>
+    <p><strong>Amendment IV.</strong> &nbsp;The right of the people to be secure in their persons, houses, papers, and effects, against unreasonable searches and seizures, shall not be violated, and no Warrants shall issue, but upon probable cause, supported by Oath or affirmation, and particularly describing the place to be searched, and the persons or things to be seized.</p>
+    <p><strong>Amendment V.</strong> &nbsp;No person shall be held to answer for a capital, or otherwise infamous crime, unless on a presentment or indictment of a Grand Jury, except in cases arising in the land or naval forces, or in the Militia, when in actual service in time of War or public danger; nor shall any person be subject for the same offence to be twice put in jeopardy of life or limb; nor shall be compelled in any criminal case to be a witness against himself, nor be deprived of life, liberty, or property, without due process of law; nor shall private property be taken for public use, without just compensation.</p>
+    <p><strong>Amendment VI.</strong> &nbsp;In all criminal prosecutions, the accused shall enjoy the right to a speedy and public trial, by an impartial jury of the State and district wherein the crime shall have been committed, and to be informed of the nature and cause of the accusation; to be confronted with the witnesses against him; to have compulsory process for obtaining witnesses in his favor, and to have the Assistance of Counsel for his defence.</p>
+    <p><strong>Amendment VII.</strong> &nbsp;In Suits at common law, where the value in controversy shall exceed twenty dollars, the right of trial by jury shall be preserved, and no fact tried by a jury, shall be otherwise re-examined in any Court of the United States, than according to the rules of the common law.</p>
+    <p><strong>Amendment VIII.</strong> &nbsp;Excessive bail shall not be required, nor excessive fines imposed, nor cruel and unusual punishments inflicted.</p>
+    <p><strong>Amendment IX.</strong> &nbsp;The enumeration in the Constitution, of certain rights, shall not be construed to deny or disparage others retained by the people.</p>
+    <p><strong>Amendment X.</strong> &nbsp;The powers not delegated to the United States by the Constitution, nor prohibited by it to the States, are reserved to the States respectively, or to the people.</p>
+  </div>
+
+  <div class="rule"></div>
+
+  <span class="art-head blue">Later Amendments</span>
+  <div class="body-text">
+    <p><strong>Amendment XIII (1865).</strong> &nbsp;Neither slavery nor involuntary servitude, except as a punishment for crime whereof the party shall have been duly convicted, shall exist within the United States, or any place subject to their jurisdiction.</p>
+    <p><strong>Amendment XIV (1868).</strong> &nbsp;All persons born or naturalized in the United States, and subject to the jurisdiction thereof, are citizens of the United States and of the State wherein they reside. No State shall make or enforce any law which shall abridge the privileges or immunities of citizens of the United States; nor shall any State deprive any person of life, liberty, or property, without due process of law; nor deny to any person within its jurisdiction the equal protection of the laws.</p>
+    <p><strong>Amendment XIX (1920).</strong> &nbsp;The right of citizens of the United States to vote shall not be denied or abridged by the United States or by any State on account of sex.</p>
+    <p><strong>Amendment XXVI (1971).</strong> &nbsp;The right of citizens of the United States, who are eighteen years of age or older, to vote shall not be denied or abridged by the United States or by any State on account of age.</p>
+  </div>
+
+  <div class="orn" style="margin-top:2rem">✦ ✦ ✦</div>
+  <p style="font-family:'Lora',serif;font-style:italic;text-align:center;opacity:0.4;font-size:0.88rem;margin-top:0.4rem;color:var(--ink)">Done in Convention by the Unanimous Consent of the States present — Philadelphia, September 17, 1787</p>
+
+</div></div><!-- /scroll-area -->
+
+  <aside class="side-panel" id="side-panel">
+    <div class="panel-empty" id="panel-empty">
+      <div class="turn-banner" id="turn-banner">Player 1's turn</div>
+      <div class="pe-icon">📜</div>
+      <p>Tap any <span class="pe-gold">gold underlined text</span> to begin a quest!</p>
+      <div class="pe-gems">💎 💎 💎 💎 💎 💎 💎 💎</div>
+    </div>
+    <div class="panel-card" id="panel-card" style="display:none">
+      <button class="popup-close" onclick="closeCard()">✕</button>
+      <div class="turn-banner card-turn" id="card-turn-banner">Player 1's turn</div>
+      <div class="p-img-wrap p-img-border" id="pImg"></div>
+      <div class="p-body" id="pBody"></div>
+    </div>
+  </aside>
+
+</div><!-- /split -->
+
+<div class="hint">
+  <div class="pdot"></div>
+  <span>Find <strong id="hint-count">8 gems</strong> — tap the gold text to answer questions!</span>
+</div>
+
+</div><!-- main-app -->
+
+<!-- VICTORY -->
+<div id="victory">
+ <div class="emoji-rain" id="emoji-rain"></div>
+ <div class="v-inner">
+  <div class="v-gems">💎 💎 💎 💎 💎 💎 💎 💎</div>
+  <div class="v-title">Quest Complete!</div>
+  <div class="v-sub" id="v-sub">Together, you found all 8 gems!</div>
+
+  <div class="v-roster" id="v-roster"></div>
+
+  <div class="v-photo-wrap">
+    <img class="v-photo" src="maia-zoram.png" alt="Maia and Zoram" onerror="this.style.display='none'">
+    <div class="v-photo-caption">Together forever — that's the real treasure 💖</div>
+  </div>
+  <p class="v-reveal-line">Our rights came from <b>God</b>, and the Constitution kept us free —<br>so we have <b>temples</b>, where <b>our family is together forever.</b> 🏛️💖</p>
+
+  <div class="v-thesis">
+    <div class="v-thesis-head">Why This All Matters</div>
+    <p>It started with God. The Declaration says our rights come from <em>Him</em> — and the Lord raised up wise men to write the Constitution to protect them. A free land is where our family can be sealed together <em>forever</em>.</p>
+  </div>
+
+  <div class="v-chain">
+    <div class="v-link">
+      <span class="v-link-icon">🙏</span>
+      <div><strong>God gave us our rights</strong><br><span class="sub">the Declaration says they come from our Creator</span></div>
+    </div>
+    <div class="v-arrow">↓</div>
+    <div class="v-link">
+      <span class="v-link-icon">📜</span>
+      <div><strong>The Constitution protects them</strong><br><span class="sub">God raised up wise men to write it</span></div>
+    </div>
+    <div class="v-arrow">↓</div>
+    <div class="v-link">
+      <span class="v-link-icon">🕊️</span>
+      <div><strong>It gave us freedom to worship</strong><br><span class="sub">no king could stop people from following God</span></div>
+    </div>
+    <div class="v-arrow">↓</div>
+    <div class="v-link">
+      <span class="v-link-icon">✨</span>
+      <div><strong>So the Church was restored</strong><br><span class="sub">the gospel came back to the earth</span></div>
+    </div>
+    <div class="v-arrow">↓</div>
+    <div class="v-link">
+      <span class="v-link-icon">🏛️</span>
+      <div><strong>And we built temples</strong><br><span class="sub">holy houses of God all over the world</span></div>
+    </div>
+    <div class="v-arrow">↓</div>
+    <div class="v-link" style="border-color:var(--gold2);background:rgba(200,151,30,0.12);">
+      <span class="v-link-icon">👨‍👩‍👧‍👦</span>
+      <div><strong>So our family is together FOREVER</strong><br><span class="sub">sealed in the temple, never to be apart</span></div>
+    </div>
+  </div>
+  <p class="v-punch">Our rights come from God → the Constitution protects them → temples → <b>family forever</b>.<br><b>That is why these documents are sacred to us.</b></p>
+
+  <!-- ── AMERICA 250 ── -->
+  <div class="v-250">
+    <div class="v-250-flag">🎆 🇺🇸 🎆</div>
+    <div class="v-250-big">America turns <b>250</b>!</div>
+    <div class="v-250-text">
+      On <b>July 4, 2026</b>, America celebrates 250 years since the Declaration of Independence. The prophet and apostles asked us to remember that our freedoms came from <b>God</b> — and to <b>fast and give thanks for religious liberty on July 5, 2026.</b>
+    </div>
+    <div class="v-quote">
+      <p>“The Constitution of the United States is a glorious standard; it is founded in the wisdom of God.”</p>
+      <div class="v-quote-by">— The Prophet Joseph Smith</div>
+    </div>
+    <div class="v-quote">
+      <p>“I testify that the United States Constitution was divinely inspired … Our loyalty is to the Constitution and its principles.”</p>
+      <div class="v-quote-by">— President Dallin H. Oaks, “Defending Our Divinely Inspired Constitution,” April 2021</div>
+    </div>
+    <div class="v-250-note">📅 That's why families are learning about this at church — the 5th-Sunday lesson, <b>“Celebrating the Founding of the United States and the U.S. Constitution.”</b></div>
+  </div>
+
+  <div class="v-scripture">
+    <div class="ref">D&amp;C 101:79–80</div>
+    <p>Therefore, it is not right that any man should be in bondage one to another. And for this purpose have I established the Constitution of this land, by the hands of wise men whom I raised up unto this very purpose.</p>
+  </div>
+  <div class="v-scripture">
+    <div class="ref">D&amp;C 109:54 — Kirtland Temple Dedicatory Prayer</div>
+    <p>Have mercy upon the rulers of our land; may those principles, which were so honorably and nobly defended, namely, the Constitution of our land, by our fathers, be established forever.</p>
+  </div>
+  <div class="v-scripture">
+    <div class="ref">D&amp;C 98:5–6</div>
+    <p>That law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind, and is justifiable before me.</p>
+  </div>
+
+  <button class="v-restart" onclick="restart()">Play Again ✦</button>
+ </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeCard()"></div>
+
+<!-- ═══ HOW-TO-PLAY TOUR ═══ -->
+<div class="tour" id="tour">
+  <div class="tour-card">
+    <div class="tour-emoji" id="tour-emoji">🗺️</div>
+    <div class="tour-step" id="tour-step">Step 1 of 4</div>
+    <div class="tour-title" id="tour-title"></div>
+    <div class="tour-text" id="tour-text"></div>
+    <div class="tour-dots" id="tour-dots"></div>
+    <div class="tour-btns">
+      <button class="tour-skip" onclick="endTour()">Skip</button>
+      <button class="tour-next" id="tour-next" onclick="tourNext()">Next ➜</button>
+    </div>
+  </div>
+</div>
+
+<!-- full-picture lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt="Full picture">
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
+
+<script>
+const GEMS = [
+  {
+    id:"g8", gem:"💎", gemName:"The Creator Gem",
+    title:"Rights Come From God",
+    constQuote:"...endowed by their Creator with certain unalienable Rights...",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/United_States_Declaration_of_Independence.jpg?width=600",
+    imgBg:"linear-gradient(135deg,#3a2410,#1a2e50)", emoji:"🕊️",
+    imgCredit:"The Declaration of Independence (1776)",
+    explain:"\"Endowed by their Creator\" means <strong>God</strong> gave us our rights — not the government. A gift from God is one <strong>no king can ever take away</strong>.",
+    question:"The Declaration says our rights are given to us by our _______.",
+    choices:[ {e:"🙏", t:"Creator (God)", ok:true}, {e:"👑", t:"a king"}, {e:"🏛️", t:"the government"} ],
+    answers:["creator","Creator","god","God"],
+    hint:"It starts with 'C' — it means God, the one who made us.",
+    scripture:{ ref:"D&C 101:78", text:"That every man may act...according to the moral agency which I have given unto him, that every man may be accountable for his own sins in the day of judgment." }
+  },
+  {
+    id:"g9", gem:"💎", gemName:"The God-Given Rights Gem",
+    title:"Life, Liberty & Happiness",
+    constQuote:"...Life, Liberty and the pursuit of Happiness.",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Declaration_of_Independence_(1819),_by_John_Trumbull.jpg?width=600",
+    imgBg:"linear-gradient(135deg,#4a2a10,#3d5c3a)", emoji:"❤️",
+    imgCredit:"Declaration of Independence, by John Trumbull",
+    explain:"God gave everyone three big gifts: <strong>Life, Liberty</strong> (freedom), and the chance to <strong>be happy</strong>. These rights belong to every person because God loves us all.",
+    question:"God gave us Life, _______, and the pursuit of Happiness.",
+    choices:[ {e:"🕊️", t:"Liberty", ok:true}, {e:"🍪", t:"Cookies"}, {e:"📺", t:"TV"} ],
+    answers:["liberty","Liberty","freedom","Freedom"],
+    hint:"It's the one that means freedom!",
+    scripture:{ ref:"2 Nephi 2:27", text:"Wherefore, men are free according to the flesh...And they are free to choose liberty and eternal life...or to choose captivity and death." }
+  },
+  {
+    id:"g1", gem:"💎", gemName:"The People's Gem",
+    title:"We the People",
+    constQuote:"We the People of the United States...",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Constitution_of_the_United_States,_page_1.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#1a2e50,#2a4a7f)", emoji:"📜",
+    imgCredit:"\"We the People\" — page 1 of the U.S. Constitution",
+    explain:"\"We the People\" means the people are in charge — <strong>not a king</strong>. God wanted it this way, so people would be free.",
+    question:"The Constitution says the power belongs to the _______ — not to a king.",
+    choices:[ {e:"🙋", t:"the people", ok:true}, {e:"👑", t:"a king"}, {e:"🐉", t:"a dragon"} ],
+    answers:["people","People","the people","the People"],
+    hint:"The very first three words of the Constitution answer this!",
+    scripture:{ ref:"D&C 101:80", text:"And for this purpose have I established the Constitution of this land, by the hands of wise men whom I raised up unto this very purpose." }
+  },
+  {
+    id:"g2", gem:"💎", gemName:"The Liberty Gem",
+    title:"Blessings of Liberty",
+    constQuote:"...secure the Blessings of Liberty to ourselves and our Posterity...",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Statue_of_Liberty_7.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#2a1508,#4a2a10)", emoji:"🗽",
+    imgCredit:"The Statue of Liberty — a symbol of freedom",
+    explain:"<strong>Liberty</strong> means freedom. The Constitution promises freedom for kids in the future too — that means YOU! God loves freedom, because it lets us choose Him.",
+    question:"The Constitution keeps safe the Blessings of _______ — it means freedom.",
+    choices:[ {e:"🕊️", t:"Liberty", ok:true}, {e:"🍬", t:"Candy"}, {e:"😴", t:"Sleep"} ],
+    answers:["liberty","Liberty","freedom","Freedom"],
+    hint:"It's the word right in the highlighted text — it means freedom!",
+    scripture:{ ref:"D&C 98:5", text:"And that law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind." }
+  },
+  {
+    id:"g3", gem:"💎", gemName:"The Restoration Gem",
+    title:"God Prepared This Land",
+    constQuote:"...do ordain and establish this Constitution for the United States of America.",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Scene_at_the_Signing_of_the_Constitution_of_the_United_States.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#1a2e50,#0f1e38)", emoji:"🖋️",
+    imgCredit:"Signing the Constitution, Philadelphia 1787 (by Howard Chandler Christy)",
+    explain:"The Constitution was signed in <strong>1787</strong>. Joseph Smith wasn't born until 1805! God got America ready <strong>first</strong> — like planting a garden before the flowers grow.",
+    question:"The Constitution was signed in the year _______.",
+    choices:[ {e:"📜", t:"1787", ok:true}, {e:"🎂", t:"2020"}, {e:"🦕", t:"a million B.C."} ],
+    answers:["1787"],
+    hint:"Look at the top of the document — 'Ordained & Established — Philadelphia, ____'",
+    scripture:{ ref:"2 Nephi 1:7", text:"Wherefore, this land is consecrated unto him whom he shall bring. And if it so be that they shall serve him according to the commandments which he hath given, it shall be a land of liberty unto them." }
+  },
+  {
+    id:"g4", gem:"💎", gemName:"The Oath Gem",
+    title:"A Solemn Oath",
+    constQuote:"I do solemnly swear...I will...preserve, protect and defend the Constitution.",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Washington's_Inauguration.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#1a2e50,#2a4a7f)", emoji:"🤝",
+    imgCredit:"George Washington takes the oath as first President, 1789",
+    explain:"Even the President must promise to <strong>protect and defend</strong> the Constitution. So the most powerful person still has to obey it — no one gets to be a king.",
+    question:"The President must promise to preserve, protect, and _______ the Constitution.",
+    choices:[ {e:"🛡️", t:"defend", ok:true}, {e:"🗑️", t:"throw away"}, {e:"🙈", t:"ignore"} ],
+    answers:["defend","Defend"],
+    hint:"It's the last word in the oath — to guard and ________ something means to protect it.",
+    scripture:{ ref:"D&C 134:1", text:"We believe that governments were instituted of God for the benefit of man; and that he holds men accountable for their acts in relation to them." }
+  },
+  {
+    id:"g5", gem:"💎", gemName:"The Supreme Law Gem",
+    title:"The Highest Law",
+    constQuote:"This Constitution...shall be the supreme Law of the Land.",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Panorama_of_United_States_Supreme_Court_Building_at_Dusk.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#3d5c3a,#1a2e50)", emoji:"⚖️",
+    imgCredit:"The U.S. Supreme Court — where the highest law is upheld",
+    explain:"<strong>Supreme</strong> means highest. The Constitution is the highest law in America — above every leader. If a law breaks it, the Constitution wins, and your freedom stays safe.",
+    question:"The Constitution is the _______ Law of the Land — the highest law of all.",
+    choices:[ {e:"👑", t:"supreme (highest)", ok:true}, {e:"🐢", t:"slowest"}, {e:"🤏", t:"smallest"} ],
+    answers:["supreme","Supreme"],
+    hint:"It's in the highlighted text — it means highest, like the ______ Court.",
+    scripture:{ ref:"D&C 98:6", text:"That law of the land which is constitutional, supporting that principle of freedom in maintaining rights and privileges, belongs to all mankind, and is justifiable before me." }
+  },
+  {
+    id:"g7", gem:"💎", gemName:"The Freedom Gem",
+    title:"Free Exercise of Religion",
+    constQuote:"Congress shall make no law...prohibiting the free exercise thereof.",
+    imgUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Bill_of_Rights_Pg1of1_AC.jpg?width=800",
+    imgBg:"linear-gradient(135deg,#1a2e50,#3d5c3a)", emoji:"📜",
+    imgCredit:"The Bill of Rights — the First Amendment is at the top",
+    explain:"The <strong>First Amendment</strong> says you can worship God any way you choose. This is the rule that lets our Church exist! Today the Church is in every country on earth.",
+    question:"Which amendment protects the freedom of religion?",
+    choices:[ {e:"1️⃣", t:"The First", ok:true}, {e:"💯", t:"The 100th"}, {e:"❌", t:"None"} ],
+    answers:["first","1st","first amendment","the first","the 1st","1"],
+    hint:"It's the very first one — the Bill of Rights starts here.",
+    scripture:{ ref:"11th Article of Faith", text:"We claim the privilege of worshiping Almighty God according to the dictates of our own conscience, and allow all men the same privilege, let them worship how, where, or what they may." }
+  }
+];
+
+// ───────────── PLAYER SETUP (1–4 players, pick avatar + name) ─────────────
+// Each color theme: pc=main, ps=soft bg, pb=border.
+// 12 avatars drawn from Latter-day Saint symbols, each with its meaning.
+const AVATARS = ['🐝','🕊️','📖','🌳','🏛️','⭐','🔥','🌾','🛡️','⚓','🌅','🌟'];
+const AVATAR_MEANING = {
+  '🐝':'The Beehive — work together (Deseret)',
+  '🕊️':'The dove — the Holy Ghost',
+  '📖':'The scriptures',
+  '🌳':'The Tree of Life — God\'s love',
+  '🏛️':'The temple — families forever',
+  '⭐':'The star — Angel Moroni',
+  '🔥':'Fire — the Holy Ghost',
+  '🌾':'The harvest — the gathering',
+  '🛡️':'The shield of faith',
+  '⚓':'The anchor — hope in Christ',
+  '🌅':'A new morning — the Restoration',
+  '🌟':'Let your light shine'
+};
+const THEMES = [
+  { pc:'#c4588a', ps:'#fce8f3', pb:'#e8a0c4' }, // pink
+  { pc:'#2270a5', ps:'#dff0fa', pb:'#70b0d8' }, // blue
+  { pc:'#3d7a3a', ps:'#e6f3e4', pb:'#9cc899' }, // green
+  { pc:'#b5701c', ps:'#fbeed6', pb:'#e0b878' }, // amber
+];
+
+let players = [];        // [{name, avatar, theme, gems:0}]
+let playerCount = 0;
+let cur = 0;             // index of whose turn it is
+let unlocked = new Set();
+let currentGemId = null;
+
+// default picks so a player can just hit Start without customizing
+const DEFAULT_NAMES = ['Player 1','Player 2','Player 3','Player 4'];
+const DEFAULT_AVATARS = ['🐝','🕊️','📖','🏛️'];
+
+function setCount(n) {
+  playerCount = n;
+  document.querySelectorAll('.count-btn').forEach((b,i) => b.classList.toggle('sel', i === n-1));
+  const rows = document.getElementById('player-rows');
+  rows.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    if (!players[i]) players[i] = { name:'', avatar:DEFAULT_AVATARS[i], theme:i };
+    const p = players[i];
+    const div = document.createElement('div');
+    div.className = 'prow';
+    div.style.borderColor = THEMES[i].pb;
+    div.innerHTML = `
+      <div class="prow-avatar" id="pa-${i}" style="background:${THEMES[i].ps};color:${THEMES[i].pc}">${p.avatar}</div>
+      <div class="prow-mid">
+        <input class="prow-name" id="pn-${i}" maxlength="14" placeholder="${DEFAULT_NAMES[i]}" value="${p.name}"
+          oninput="players[${i}].name=this.value">
+        <div class="prow-emojis" id="pe-${i}"></div>
+        <div class="prow-hint" id="ph-${i}">${AVATAR_MEANING[p.avatar] || 'Pick a symbol'}</div>
+      </div>`;
+    rows.appendChild(div);
+    const er = div.querySelector('.prow-emojis');
+    AVATARS.forEach(a => {
+      const b = document.createElement('div');
+      b.className = 'prow-emoji' + (a === p.avatar ? ' sel' : '');
+      b.textContent = a;
+      b.title = AVATAR_MEANING[a];
+      b.onclick = () => pickAvatar(i, a);
+      er.appendChild(b);
+    });
+  }
+  document.getElementById('start-btn').style.display = 'inline-block';
+}
+
+function pickAvatar(i, a) {
+  players[i].avatar = a;
+  document.getElementById('pa-' + i).textContent = a;
+  const h = document.getElementById('ph-' + i);
+  if (h) h.textContent = AVATAR_MEANING[a] || '';
+  document.querySelectorAll(`#pe-${i} .prow-emoji`).forEach(e =>
+    e.classList.toggle('sel', e.textContent === a));
+}
+
+function applyTheme() {
+  const t = players[cur].theme;
+  document.documentElement.style.setProperty('--pc', THEMES[t].pc);
+  document.documentElement.style.setProperty('--ps', THEMES[t].ps);
+  document.documentElement.style.setProperty('--pb', THEMES[t].pb);
+  const badge = document.getElementById('hdr-badge');
+  badge.textContent = players[cur].avatar;
+  badge.style.background = THEMES[t].ps;
+  badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+  document.getElementById('hdr-sub').textContent = `${players[cur].name}'s turn`;
+  updateTurnBanners();
+}
+
+function updateTurnBanners() {
+  const txt = `${players[cur].avatar} ${players[cur].name}'s turn`;
+  ['turn-banner','card-turn-banner'].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.textContent = txt;
+  });
+}
+
+function openLightbox(url, credit) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-cap').textContent = credit || '';
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function startQuest() {
+  if (!playerCount) setCount(1);
+  // fill in any blank names with their defaults
+  players = players.slice(0, playerCount).map((p, i) => ({
+    name: (p.name || '').trim() || DEFAULT_NAMES[i],
+    avatar: p.avatar || DEFAULT_AVATARS[i],
+    theme: i,
+    gems: 0
+  }));
+  cur = 0;
+  applyTheme();
+  document.getElementById('char-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  buildGemTrack();
+  startTour();
+}
+
+// ───────────── HOW-TO-PLAY TOUR ─────────────
+const TOUR = [
+  { emoji:'📜', title:'Two Special Papers', text:'You\'re looking at the <b>Declaration of Independence</b> and the <b>Constitution</b> — the papers that made America free.' },
+  { emoji:'💎', title:'Find the Hidden Gems', text:'See the <b>gold underlined words</b>? Tap one to open a gem. There are <b>8 gems</b> to find!' },
+  { emoji:'👆', title:'Tap the Right Answer', text:'Each gem asks one easy question. Just <b>tap the picture</b> you think is right — no spelling needed!' },
+  { emoji:'🤝', title:'Take Turns Together', text:'Players take turns automatically. Work as a <b>team</b> to find all 8 gems and unlock the surprise at the end!' }
+];
+let tourIdx = 0;
+
+function startTour() {
+  tourIdx = 0;
+  renderTour();
+  document.getElementById('tour').classList.add('open');
+}
+
+function renderTour() {
+  const t = TOUR[tourIdx];
+  document.getElementById('tour-emoji').textContent = t.emoji;
+  document.getElementById('tour-step').textContent = `Step ${tourIdx+1} of ${TOUR.length}`;
+  document.getElementById('tour-title').textContent = t.title;
+  document.getElementById('tour-text').innerHTML = t.text;
+  document.getElementById('tour-next').textContent = tourIdx === TOUR.length-1 ? 'Let\'s Play! ✦' : 'Next ➜';
+  document.getElementById('tour-dots').innerHTML =
+    TOUR.map((_, i) => `<div class="tour-dot${i === tourIdx ? ' on' : ''}"></div>`).join('');
+}
+
+function tourNext() {
+  if (tourIdx < TOUR.length - 1) { tourIdx++; renderTour(); }
+  else endTour();
+}
+
+function endTour() {
+  document.getElementById('tour').classList.remove('open');
+}
+
+// Pass the turn to the next player (wraps around).
+function nextTurn() {
+  cur = (cur + 1) % players.length;
+  applyTheme();
+}
+
+function buildGemTrack() {
+  const t = document.getElementById('gem-track');
+  t.innerHTML = '';
+  GEMS.forEach(g => {
+    const s = document.createElement('div');
+    s.className = 'gem-slot ' + (unlocked.has(g.id) ? 'unlocked' : 'locked');
+    s.id = 'slot-' + g.id;
+    s.textContent = unlocked.has(g.id) ? g.gem : '○';
+    s.title = unlocked.has(g.id) ? g.gemName : 'Locked';
+    t.appendChild(s);
+  });
+  const left = GEMS.length - unlocked.size;
+  document.getElementById('hint-count').textContent =
+    left === 0 ? 'all gems found!' : left + ' gem' + (left !== 1 ? 's' : '') + ' left';
+  const ts = document.getElementById('team-score');
+  if (ts) ts.textContent = unlocked.size === GEMS.length
+    ? `🤝 Team: all ${GEMS.length} gems found together!`
+    : `🤝 Team: ${unlocked.size} of ${GEMS.length} gems found together`;
+}
+
+function openCard(el) {
+  const id = el.dataset.id;
+  currentGemId = id;
+  const d = GEMS.find(g => g.id === id);
+  if (!d) return;
+  document.querySelectorAll('.hs').forEach(h => h.classList.remove('active'));
+  el.classList.add('active');
+  const done = unlocked.has(id);
+  const me = players[cur];
+
+  // image — tap to see the full picture (they're not cropped for this box)
+  document.getElementById('pImg').setAttribute('onclick', `openLightbox(${JSON.stringify(d.imgUrl)},${JSON.stringify(d.imgCredit)})`);
+  document.getElementById('pImg').innerHTML = `
+    <div class="p-img-fallback" style="background:${d.imgBg}">
+      <span>${d.emoji}</span><p>${d.imgCredit}</p>
+    </div>
+    <img src="${d.imgUrl}" alt="${d.imgCredit}" onerror="this.style.display='none'" style="position:absolute;inset:0;z-index:1;width:100%;height:182px;object-fit:cover;">
+    <div class="p-img-zoom">🔍 Tap to see full picture</div>`;
+
+  let body = `
+    <span class="p-player-tag">${me.avatar} ${me.name} · 💎 ${d.gemName}</span>
+    <div class="p-title">${d.title}</div>
+    <div class="p-const">${d.constQuote}</div>
+    <div class="p-explain">${d.explain}</div>
+    <div class="p-thesis">
+      <div class="p-thesis-head">✦ Remember the big idea ✦</div>
+      <div class="p-thesis-chain">🙏 <b>God</b> → 📜 Constitution → 🕊️ <b>freedom</b> → ✨ <b>the Church</b> → 🏛️ <b>temples</b> → 👨‍👩‍👧‍👦 <b>family forever!</b></div>
+    </div>`;
+
+  if (done) {
+    body += `<div class="already-done">💎 Gem already unlocked — great work!</div>`;
+  } else {
+    // scramble the choice order fresh each time
+    const shuffled = d.choices.map(c => c).sort(() => Math.random() - 0.5);
+    const choiceBtns = shuffled.map(c =>
+      `<button class="q-choice" data-ok="${c.ok ? 1 : 0}" onclick="pickChoice(this)">
+         <span class="q-choice-e">${c.e}</span><span class="q-choice-t">${c.t}</span>
+       </button>`).join('');
+    body += `
+      <div class="q-box">
+        <div class="q-label">${me.avatar} ${me.name} — tap the right answer!</div>
+        <div class="q-prompt">${d.question.replace('_______','<span class="q-blank">_______</span>')}</div>
+        <div class="q-choices">${choiceBtns}</div>
+      </div>
+      <div class="gem-reveal" id="gem-reveal">
+        <span class="gem-reveal-icon">💎</span>
+        <div class="gem-reveal-text">${d.gemName} Unlocked!</div>
+        <div class="gem-reveal-turn" id="gem-reveal-turn"></div>
+      </div>`;
+  }
+
+  body += `<div class="p-scripture"><div class="ref">${d.scripture.ref}</div><p>${d.scripture.text}</p></div>`;
+  document.getElementById('pBody').innerHTML = body;
+
+  updateTurnBanners();
+  document.getElementById('panel-empty').style.display = 'none';
+  document.getElementById('panel-card').style.display = 'block';
+  const panel = document.getElementById('side-panel');
+  panel.classList.add('open');
+  panel.scrollTop = 0;
+  document.getElementById('overlay').classList.add('open'); // backdrop on phones only
+}
+
+// Tap-to-answer: kids tap a picture button instead of typing.
+function pickChoice(btn) {
+  const id = currentGemId;
+  if (!id || unlocked.has(id)) return;
+  const d = GEMS.find(g => g.id === id);
+  if (btn.dataset.ok === '1') {
+    btn.classList.add('correct');
+    document.querySelectorAll('.q-choice').forEach(b => b.disabled = true);
+    unlockGem(id, d);
+  } else {
+    btn.classList.add('wrong');
+    btn.disabled = true; // remove the wrong one so it gets easier, not harder
+    setTimeout(() => btn.classList.remove('wrong'), 400);
+  }
+}
+
+function unlockGem(id, d) {
+  unlocked.add(id);
+  players[cur].gems++;                 // credit this player
+  const badge = document.getElementById('badge-' + id);
+  if (badge) { badge.classList.remove('locked'); badge.classList.add('lit'); }
+  const hs = document.querySelector(`.hs[data-id="${id}"]`);
+  if (hs) hs.classList.add('done');
+  const rev = document.getElementById('gem-reveal');
+  if (rev) rev.classList.add('show');
+  buildGemTrack();
+
+  if (unlocked.size === GEMS.length) {
+    setTimeout(showVictory, 1300);
+    return;
+  }
+
+  // Turn-based hand-off: the next player takes the next gem.
+  const me = players[cur];
+  const nextP = players[(cur + 1) % players.length];
+  const turn = document.getElementById('gem-reveal-turn');
+  if (turn) turn.innerHTML =
+    `Great job, ${me.name}! &nbsp;➜&nbsp; Now it's <strong>${nextP.name}'s turn</strong> ${nextP.avatar}`;
+  nextTurn();
+}
+
+let rainTimer = null;
+function showVictory() {
+  closeCard();
+  const names = players.map(p => `${p.avatar} ${p.name}`);
+  const list = names.length === 1 ? names[0]
+    : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+  document.getElementById('v-sub').textContent = `${list} found all 8 gems — together!`;
+
+  // roster: everyone + their gem count
+  document.getElementById('v-roster').innerHTML = players.map(p =>
+    `<div class="v-pl"><div class="v-pl-av">${p.avatar}</div>
+       <div class="v-pl-name">${p.name}</div>
+       <div class="v-pl-gems">💎 ${p.gems}</div></div>`).join('');
+
+  document.getElementById('victory').classList.add('show');
+  startEmojiRain();
+}
+
+function startEmojiRain() {
+  const layer = document.getElementById('emoji-rain');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const set = ['💎','💖','🏛️','📜','👨‍👩‍👧‍👦','🕊️','✨','🙏'];
+  // initial burst so it's already raining the instant the screen appears
+  for (let i = 0; i < 28; i++) dropEmoji(layer, set, true);
+  clearInterval(rainTimer);
+  rainTimer = setInterval(() => dropEmoji(layer, set, false), 220);
+}
+
+function dropEmoji(layer, set, seeded) {
+  const s = document.createElement('span');
+  s.textContent = set[Math.floor(Math.random() * set.length)];
+  s.style.left = Math.random() * 100 + 'vw';
+  const dur = 4 + Math.random() * 4;            // 4–8s fall
+  s.style.animationDuration = dur + 's';
+  if (seeded) s.style.animationDelay = (-Math.random() * dur) + 's'; // mid-fall on load
+  s.style.fontSize = (1.1 + Math.random() * 1.4) + 'rem';
+  layer.appendChild(s);
+  setTimeout(() => s.remove(), dur * 1000 + 200);
+}
+
+function stopEmojiRain() {
+  clearInterval(rainTimer); rainTimer = null;
+  const layer = document.getElementById('emoji-rain');
+  if (layer) layer.innerHTML = '';
+}
+
+function restart() {
+  unlocked.clear(); currentGemId = null; cur = 0;
+  players.forEach(p => p.gems = 0);
+  stopEmojiRain();
+  document.getElementById('victory').classList.remove('show');
+  GEMS.forEach(g => {
+    const b = document.getElementById('badge-' + g.id);
+    if (b) { b.className = 'gem-badge locked'; }
+    const h = document.querySelector(`.hs[data-id="${g.id}"]`);
+    if (h) h.classList.remove('done','active');
+  });
+  buildGemTrack();
+  closeCard();
+  document.getElementById('char-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+}
+
+function closeCard() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('panel-card').style.display = 'none';
+  document.getElementById('panel-empty').style.display = '';
+  document.querySelectorAll('.hs').forEach(h => h.classList.remove('active'));
+  currentGemId = null;
+}
+
+let scale = 1;
+function zoom(d) {
+  scale = Math.min(2.5, Math.max(0.5, scale + d * 0.15));
+  document.getElementById('doc').style.transform = `scale(${scale})`;
+  document.getElementById('zlabel').textContent = Math.round(scale*100)+'%';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('tour').classList.contains('open')) { endTour(); return; }
+  if (document.getElementById('lightbox').classList.contains('open')) { closeLightbox(); return; }
+  closeCard();
+});
+</script>
+</body>
+</html>
