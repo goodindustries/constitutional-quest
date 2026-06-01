@@ -4,7 +4,12 @@
 import { getStore } from '@netlify/blobs';
 
 export default async (req) => {
-  const store = getStore('quest-stats');
+  // Manual CLI deploys don't auto-inject the Blobs context, so pass it explicitly.
+  const store = getStore({
+    name: 'quest-stats',
+    siteID: process.env.BLOB_SITE_ID,
+    token: process.env.BLOB_TOKEN
+  });
   const KEY = 'shareCount';
 
   let count = Number(await store.get(KEY)) || 0;
