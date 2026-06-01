@@ -1,14 +1,16 @@
 {
   "name": "fhe",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hidden Gems of the Constitution — a faith-building treasure-hunt game for Family Home Evening, teaching the Declaration, the Constitution, and how religious freedom enabled the Restoration.",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.mjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["lds", "fhe", "constitution", "declaration-of-independence", "religious-freedom", "education", "game"],
+  "author": "Reif Tauati <reif@thegoodproject.net> (https://thegoodproject.net)",
+  "license": "MIT",
+  "homepage": "https://constitutional-quest.netlify.app",
+  "repository": { "type": "git", "url": "https://github.com/goodindustries/constitutional-quest.git" },
   "type": "commonjs",
   "dependencies": {
     "@netlify/blobs": "^8.2.0"

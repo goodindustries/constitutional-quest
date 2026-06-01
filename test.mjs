@@ -80,7 +80,14 @@ const scrollWords = await page.$eval('.p-scroll-words', e => e.textContent);
 check(/moral agency/.test(scrollWords), 'scroll shows actual D&C 101:78 words');
 const whyChain = await page.$eval('.p-why', e => e.textContent);
 check(/Doctrine:/.test(whyChain) && /Temple:/.test(whyChain), 'why-it-matters chain renders');
+// scripture source link points to churchofjesuschrist.org
+const srcHref = await page.$eval('.p-source', a => a.href);
+check(/churchofjesuschrist\.org\/study\/scriptures/.test(srcHref), 'scripture card links to churchofjesuschrist.org');
 await page.evaluate(() => closeCard());
+// Level 1 founding card links to the National Archives
+await page.evaluate(() => { loadLevel(1); openCard(document.querySelector('[data-id="g1"]')); }); await wait(200);
+check(await page.$eval('.p-source', a => /archives\.gov/.test(a.href)), 'founding card links to archives.gov');
+await page.evaluate(() => { closeCard(); loadLevel(2); }); await wait(300);
 await playLevel(['r1','r2','r3','r4','r5','r6','r7','r8'], 'L2', true);
 await wait(1300);
 check(await page.$eval('#lc-next', e => /Covenant Crown/.test(e.textContent)), 'unlocks Quest 3: Covenant Crown');

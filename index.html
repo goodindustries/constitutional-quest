@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
-<title>Constitutional Quest</title>
+<title>Hidden Gems of the Constitution</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📜</text></svg>">
-<meta name="description" content="A faith-building treasure-hunt game for kids and families: discover the Declaration, the Constitution, and how religious freedom enabled the Restoration — 3 quests from the Founding to forever families.">
-<meta property="og:title" content="The Constitutional Quest">
+<meta name="description" content="A faith-building treasure-hunt game for kids and families: discover the Declaration of Independence, the Constitution, and how religious freedom enabled the Restoration — 3 quests from the Founding to forever families.">
+<meta property="og:title" content="Hidden Gems of the Constitution">
 <meta property="og:description" content="A 3-quest treasure hunt for FHE: the Founding, the Restoration, and the Covenant. Discover how God protected freedom so families can be together forever.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://constitutional-quest-lds.netlify.app">
-<meta property="og:image" content="https://constitutional-quest-lds.netlify.app/og.png">
+<meta property="og:url" content="https://constitutional-quest.netlify.app">
+<meta property="og:image" content="https://constitutional-quest.netlify.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="The Constitutional Quest">
+<meta name="twitter:title" content="Hidden Gems of the Constitution">
 <meta name="twitter:description" content="A 3-quest treasure hunt for FHE — discover how God protected freedom so families can be together forever.">
-<meta name="twitter:image" content="https://constitutional-quest-lds.netlify.app/og.png">
+<meta name="twitter:image" content="https://constitutional-quest.netlify.app/og.png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -97,6 +97,8 @@ html, body { height:100%; overflow:hidden; background:#08050f; font-family:'Nuni
 
 /* ── PLAYER SETUP ── */
 .setup-q{font-family:'Cinzel',serif;font-size:0.95rem;color:var(--gold2);margin-bottom:0.7rem;letter-spacing:0.04em;}
+.cs-guide{display:inline-block;margin-top:1rem;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:rgba(232,196,96,0.75);text-decoration:none;border-bottom:1px dashed rgba(232,196,96,0.4);padding-bottom:1px;transition:color 0.15s;}
+.cs-guide:hover{color:#e8c460;}
 .count-row{display:flex;gap:0.7rem;justify-content:center;margin-bottom:1.6rem;}
 .count-btn{
   width:54px;height:54px;border-radius:14px;border:2px solid rgba(200,151,30,0.4);
@@ -452,6 +454,8 @@ header {
 .p-scripture{background:rgba(61,92,58,0.08);border-left:4px solid var(--sage);border-radius:0 7px 7px 0;padding:0.62rem 0.88rem;}
 .p-scripture .ref{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.14em;color:var(--sage);margin-bottom:0.22rem;}
 .p-scripture p{font-family:'Lora',serif;font-style:italic;font-size:0.9rem;color:rgba(30,18,6,0.8);line-height:1.65;}
+.p-source{display:inline-block;margin-top:0.5rem;font-family:'Nunito',sans-serif;font-style:normal;font-size:0.72rem;font-weight:800;color:var(--sage);text-decoration:none;border-bottom:1px dashed rgba(61,92,58,0.5);}
+.p-source:hover{color:#2a4a2a;}
 
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(200,151,30,0.4);border-radius:4px;}
 
@@ -590,6 +594,7 @@ header {
 .about-card{position:relative;width:min(440px,94vw);max-height:88vh;overflow-y:auto;background:linear-gradient(160deg,#fdf8ed,#f0e6cf);border:2px solid var(--gold);border-radius:18px;padding:1.8rem 1.6rem;box-shadow:0 24px 70px rgba(0,0,0,0.7);animation:tourPop 0.35s cubic-bezier(.2,1.3,.4,1);}
 .about-close{position:absolute;top:0.7rem;right:0.8rem;background:rgba(30,18,6,0.5);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;}
 .about-emoji{font-size:2.6rem;text-align:center;margin-bottom:0.2rem;}
+.about-photo{display:block;width:110px;height:110px;object-fit:cover;border-radius:50%;margin:0 auto 0.6rem;border:3px solid var(--gold);box-shadow:0 6px 18px rgba(0,0,0,0.35);}
 .about-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--blue);text-align:center;margin-bottom:0.9rem;}
 .about-text{font-family:'Lora',serif;font-size:0.92rem;line-height:1.65;color:var(--ink);}
 .about-text p{margin-bottom:0.7rem;}
@@ -631,9 +636,9 @@ header {
 
   <!-- LEFT: hero + preview carousel -->
   <div class="cs-hero">
-    <div class="cs-eyebrow">The Constitutional Quest</div>
-    <div class="cs-title">The Constitutional Quest</div>
-    <div class="cs-sub">Hidden in the Declaration &amp; the Constitution — take turns and find them together!</div>
+    <div class="cs-eyebrow">A Family Treasure Hunt</div>
+    <div class="cs-title">Hidden Gems<br>of the Constitution</div>
+    <div class="cs-sub">Hidden in the Declaration of Independence &amp; the Constitution — take turns and find them together!</div>
     <div class="cs-gems">
       <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
       <span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span><span class="cs-gem">💎</span>
@@ -656,6 +661,7 @@ header {
     </div>
     <div id="player-rows"></div>
     <button id="start-btn" class="cs-btn" style="display:none;background:var(--gold);color:var(--blue);margin-top:1.6rem;padding:0.7rem 2rem;font-size:0.95rem;" onclick="startQuest()">Start the Quest ✦</button>
+    <a class="cs-guide" href="constitutional-quest-fhe-guide.pdf" target="_blank" rel="noopener">📄 For parents &amp; teachers — read the lesson guide</a>
   </div>
 
  </div>
@@ -668,7 +674,7 @@ header {
   <div class="hdr-l">
     <div class="pbadge" id="hdr-badge" title="Whose turn it is">🐝</div>
     <div>
-      <div class="hdr-eyebrow">Constitutional Quest</div>
+      <div class="hdr-eyebrow">Hidden Gems</div>
       <div class="hdr-turn" id="hdr-sub">Player 1's turn</div>
     </div>
   </div>
@@ -870,7 +876,7 @@ header {
   <div class="v-chain">
     <div class="v-link">
       <span class="v-link-icon">🙏</span>
-      <div><strong>God gave us our rights</strong><br><span class="sub">the Declaration says they come from our Creator</span></div>
+      <div><strong>God gave us our rights</strong><br><span class="sub">the Declaration of Independence says they come from our Creator</span></div>
     </div>
     <div class="v-arrow">↓</div>
     <div class="v-link">
@@ -953,7 +959,7 @@ header {
 <div class="about-modal" id="about-modal" onclick="if(event.target===this)closeAbout()">
   <div class="about-card">
     <button class="about-close" onclick="closeAbout()">✕</button>
-    <div class="about-emoji">👋</div>
+    <img class="about-photo" src="reif.jpg" alt="Reif Tauati" onerror="this.outerHTML='<div class=\'about-emoji\'>👋</div>'">
     <div class="about-title">About the Author</div>
     <div class="about-text">
       <p>Hi, I'm <b>Reif Tauati</b>. This game is a fun little project I built to teach my kids during FHE — aligned with the First Presidency's guidance to give “instruction about the significance of the Declaration of Independence, the Constitution, and related events that enabled the Restoration of the Church.”</p>
@@ -1319,7 +1325,7 @@ const L3_GEMS = [
 // Level config — different artifact + framing per level.
 const LEVELS = {
   1:{ name:"The Founding Treasure",  sub:"Find the Gems",        gems:L1_GEMS, art:"💎", mode:"doc",
-      intro:"Find the gems hidden in the Declaration & the Constitution. They answer: <b>What happened?</b>" },
+      intro:"Find the gems hidden in the Declaration of Independence & the Constitution. They answer: <b>What happened?</b>" },
   2:{ name:"The Restoration Key",    sub:"Read the Records",     gems:L2_GEMS, art:"📜", mode:"list",
       intro:"You found the treasure. Now learn <b>why the Lord protected it.</b> Tap each ancient scroll to read the real words." },
   3:{ name:"The Covenant Crown",     sub:"Keep the Covenant",    gems:L3_GEMS, art:"👑", mode:"list",
@@ -1599,7 +1605,7 @@ function startPreview() {
 function stopPreview() { clearInterval(pvTimer); }
 
 // ───────────── SHARING (canvas-rendered image card) ─────────────
-const SHARE_URL = 'https://constitutional-quest-lds.netlify.app';
+const SHARE_URL = 'https://constitutional-quest.netlify.app';
 
 // Count a share on the Netlify Function (fire-and-forget) and refresh the badge.
 // No-op when opened from file:// (the API only exists on the deployed site).
@@ -1686,7 +1692,7 @@ function makeShareCard({ emoji, title, quote, ref, footer }) {
   ctx.fillText(footer || 'Play & learn:', W/2, H-150);
   ctx.fillStyle = '#f5ecd5';
   ctx.font = 'bold 40px Georgia';
-  ctx.fillText('constitutional-quest-lds.netlify.app', W/2, H-100);
+  ctx.fillText('constitutional-quest.netlify.app', W/2, H-100);
 
   return new Promise(res => cv.toBlob(res, 'image/png'));
 }
@@ -1768,6 +1774,53 @@ function buildGemTrack() {
   if (ts) ts.textContent = unlocked.size === GEMS.length
     ? `🤝 Team: all ${GEMS.length} ${noun}s found together!`
     : `🤝 Team: ${unlocked.size} of ${GEMS.length} ${noun}s found together`;
+}
+
+// Build a "read the source" link from a gem. Scriptures → churchofjesuschrist.org;
+// founding-document gems → the National Archives; prophet quotes → their talk.
+const TALK_URLS = {
+  // Living-prophet quotes (Level 3) — keyed by gem id
+  c1: { url:'https://www.churchofjesuschrist.org/study/general-conference/2021/10/47nelson?lang=eng', label:'Read President Nelson on churchofjesuschrist.org' },
+  c2: { url:'https://www.churchofjesuschrist.org/study/general-conference/2021/04/51oaks?lang=eng', label:'Read President Oaks on churchofjesuschrist.org' },
+  c3: { url:'https://www.churchofjesuschrist.org/study/broadcasts/worldwide-devotional-for-young-adults/2018/06/hope-of-israel?lang=eng', label:'Read “Hope of Israel” on churchofjesuschrist.org' },
+  c4: { url:'https://www.churchofjesuschrist.org/study/general-conference/2021/10/47nelson?lang=eng', label:'Read President Nelson on churchofjesuschrist.org' }
+};
+// Founding-document gems (Level 1) → National Archives transcript
+const ARCHIVE_URLS = {
+  g8:{ url:'https://www.archives.gov/founding-docs/declaration-transcript', label:'Read the Declaration of Independence at archives.gov' },
+  g9:{ url:'https://www.archives.gov/founding-docs/declaration-transcript', label:'Read the Declaration of Independence at archives.gov' },
+  g1:{ url:'https://www.archives.gov/founding-docs/constitution-transcript', label:'Read the Constitution at archives.gov' },
+  g2:{ url:'https://www.archives.gov/founding-docs/constitution-transcript', label:'Read the Constitution at archives.gov' },
+  g3:{ url:'https://www.archives.gov/founding-docs/constitution-transcript', label:'Read the Constitution at archives.gov' },
+  g4:{ url:'https://www.archives.gov/founding-docs/constitution-transcript', label:'Read the Constitution at archives.gov' },
+  g5:{ url:'https://www.archives.gov/founding-docs/constitution-transcript', label:'Read the Constitution at archives.gov' },
+  g7:{ url:'https://www.archives.gov/founding-docs/bill-of-rights-transcript', label:'Read the Bill of Rights at archives.gov' }
+};
+function sourceLink(d) {
+  if (TALK_URLS[d.id]) return TALK_URLS[d.id];
+  // Level 1 founding gems: link the document itself (with the scripture still cited on-card)
+  if (ARCHIVE_URLS[d.id]) return ARCHIVE_URLS[d.id];
+  // Everything else: derive a churchofjesuschrist.org scripture URL from the ref
+  const u = scriptureUrl(d.scripture.ref);
+  return u ? { url:u, label:'Read it on churchofjesuschrist.org' } : null;
+}
+function scriptureUrl(ref) {
+  if (!ref) return null;
+  const base = 'https://www.churchofjesuschrist.org/study/scriptures/';
+  const m = ref.match(/^(.*?)\s+(\d+):/) || ref.match(/^(.*?)\s+(\d+)/);
+  const book = (m ? m[1] : ref).trim();
+  const chap = m ? m[2] : '1';
+  const map = {
+    'D&C':['dc-testament/dc'], 'Mosiah':['bofm/mosiah'], 'Alma':['bofm/alma'],
+    '2 Nephi':['bofm/2-ne'], 'Joseph Smith—History':['pgp/js-h'], 'Joseph Smith-History':['pgp/js-h'],
+    'Articles of Faith':['pgp/a-of-f'], '11th Article of Faith':['pgp/a-of-f']
+  };
+  // normalize a couple of odd refs
+  if (/Article of Faith/i.test(ref)) return base + 'pgp/a-of-f/1?lang=eng';
+  const path = map[book];
+  if (!path) return null;
+  const chapter = /js-h|a-of-f/.test(path[0]) ? '1' : chap;
+  return `${base}${path[0]}/${chapter}?lang=eng`;
 }
 
 function openCard(el) {
@@ -1856,7 +1909,8 @@ function openCard(el) {
       </div>`;
   }
 
-  body += `<div class="p-scripture"><div class="ref">${d.scripture.ref}</div><p>${d.scripture.text}</p></div>`;
+  const src = sourceLink(d);
+  body += `<div class="p-scripture"><div class="ref">${d.scripture.ref}</div><p>${d.scripture.text}</p>${src ? `<a class="p-source" href="${src.url}" target="_blank" rel="noopener">📖 ${src.label} ↗</a>` : ''}</div>`;
   body += `<button class="share-btn" onclick="shareGem(this)">↗ Share this</button>`;
   document.getElementById('pBody').innerHTML = body;
 

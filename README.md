@@ -1,8 +1,8 @@
-# The Constitutional Quest 🇺🇸💎📜👑
+# Hidden Gems of the Constitution 🇺🇸💎📜👑
 
 A faith-building, kid-friendly **treasure-hunt game** that teaches the **Declaration of Independence**, the **Constitution**, and how religious freedom enabled the **Restoration of the Church** — built for Family Home Evening, aligned with the First Presidency's 2026 invitation to teach the significance of America's founding documents and to give thanks for religious liberty.
 
-### ▶️ Play it free: **[constitutional-quest-lds.netlify.app](https://constitutional-quest-lds.netlify.app)**
+### ▶️ Play it free: **[constitutional-quest.netlify.app](https://constitutional-quest.netlify.app)**
 No install. Works on a phone, tablet, or computer. 1–4 players take turns together.
 
 📄 **[Download the FHE / Teacher Guide (PDF)](constitutional-quest-fhe-guide.pdf)** — how to run it, talking points, and verified scripture/prophet sources.
